@@ -1,26 +1,58 @@
 {
-  "name": "club_dashboard",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "dependencies": {
-    "express": "^4.16.4",
-    "jsonwebtoken": "^8.5.0",
-    "mongodb": "^3.1.13"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
+  "name": "dashboard-server",
+  "version": "0.1.0",
+  "description": "Dashboard server for devclub",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devclub-iitd/Club_Dashboard.git"
+    "url": "git+https://github.com/devclub-iitd/DashboardServer.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Suyash Agrawal",
+  "license": "MIT",
+  "scripts": {
+    "start": "npm run serve",
+    "build": "npm run build-ts && npm run tslint",
+    "serve": "node dist/server.js",
+    "watch-node": "nodemon dist/server.js",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "debug": "npm run build && npm run watch-debug",
+    "serve-debug": "nodemon --inspect dist/server.js",
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
+  },
+  "dependencies": {
+    "@types/errorhandler": "0.0.32",
+    "@types/validator": "^10.11.0",
+    "bluebird": "^3.5.4",
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.4",
+    "dotenv": "^7.0.0",
+    "errorhandler": "^1.5.0",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.1",
+    "jsonwebtoken": "^8.5.0",
+    "lusca": "^1.6.1",
+    "mongodb": "^3.1.13",
+    "mongoose": "^5.4.21",
+    "validator": "^10.11.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.26",
+    "@types/compression": "0.0.36",
+    "@types/dotenv": "^6.1.1",
+    "@types/lusca": "^1.5.0",
+    "@types/mongoose": "^5.3.24",
+    "@types/express": "^4.16.1",
+    "nodemon": "^1.18.10",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.15.0",
+    "typescript": "^3.4.1",
+    "concurrently": "^4.1.0"
+  },
   "bugs": {
-    "url": "https://github.com/devclub-iitd/Club_Dashboard/issues"
+    "url": "https://github.com/devclub-iitd/DashboardServer/issues"
   },
-  "homepage": "https://github.com/devclub-iitd/Club_Dashboard#readme"
+  "homepage": "https://github.com/devclub-iitd/DashboardServer#readme"
 }
