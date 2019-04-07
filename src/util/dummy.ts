@@ -118,8 +118,8 @@ const items = [
         parentId: ["events",0],
         title: "Book Room",
         description: "Book LH108",
-        type: "TODO",
-        status: "Working",
+        type: "event",
+        labels: ["Working","Important"],
         assignee: [2],
         dueDate: new Date(),
         completed: false
@@ -128,8 +128,8 @@ const items = [
         parentId: ["events",0],
         title: "Create Poster",
         description: "Create dashiing poster",
-        type: "Completed",
-        status: "Done",
+        type: "event",
+        labels: ["Done"],
         assignee: [0],
         dueDate: new Date(),
         completed: true
@@ -138,8 +138,8 @@ const items = [
         parentId: ["projects",0],
         title: "Design Doc",
         description: "Create Design doc",
-        type: "TODO",
-        status: "Working",
+        type: "project",
+        labels: ["Working"],
         assignee: [1],
         dueDate: new Date(),
         completed: false
@@ -148,8 +148,8 @@ const items = [
         parentId: ["projects",1],
         title: "Implement",
         description: "Finish up",
-        type: "TODO",
-        status: "Working",
+        type: "project",
+        labels: ["Working"],
         assignee: [0,1,2],
         dueDate: new Date(),
         completed: false

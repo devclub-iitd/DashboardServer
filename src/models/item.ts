@@ -17,17 +17,19 @@ const itemSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    type: { // TODO: What was this for?
+    type: {
         type: String,
         required: true,
         lowercase: true,
-        trim: true
+        trim: true,
+        enum:  ["project","event"]
     },
-    status: {
-        type: String,
-        required: true,
-        lowercase: true,
-        trim: true
+    labels: {
+        type: [{
+            type: String,
+            lowercase: true,
+            trim: true
+        }]
     },
     assignee: {
         type: [{
