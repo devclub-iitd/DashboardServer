@@ -5,8 +5,16 @@ import lusca from "lusca";
 import path from "path";
 import mongoose from "mongoose";
 import bluebird from "bluebird";
-import { MONGODB_URI } from "./util/secrets";
-import {createDummyData} from "./util/dummy";
+import { MONGODB_URI } from "./utils/secrets";
+import {createDummyData} from "./utils/dummy";
+
+import userRouter from "./controllers/user";
+import projectRouter from "./controllers/project";
+import eventRouter from "./controllers/event";
+import itemRouter from "./controllers/item";
+
+import { Request, Response, NextFunction } from "express";
+
 
 // Create Express server
 const app = express();
@@ -33,20 +41,39 @@ app.use(
 );
 
 
-let router = express.Router();
+let apiRouter = express.Router();
+
+
+apiRouter.use('/user', userRouter);
+apiRouter.use('/project', projectRouter);
+apiRouter.use('/event', eventRouter);
+apiRouter.use('/item', itemRouter);
 
 // test route to make sure everything is working
-router.get('/', function(_, res) {
-  res.json({ message: 'hooray! welcome to dashboard api!' });   
+apiRouter.get('/', function(_, res) {
+    res.json({
+      "data": null,
+      "message": "Hooray! Welcome to dashboard api!"
+  });
 });
-router.get('/dummy',function(_,res) {
+apiRouter.get('/dummy',function(_,res) {
   createDummyData()
   .then((_)=>{
     return res.json({message: "All created!"});
   });
 })
 
-app.use('/api', router);
+
+
+app.use('/api', apiRouter);
+
+app.use(function(err:Error, req : Request, res: Response, next : NextFunction){
+  res.status(err.status || 500);
+  let e = new Error();
+  e.message = err.message;
+  e.name = err.name;
+  res.send(e);
+});
 
 
 export default app;

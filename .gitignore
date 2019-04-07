@@ -66,4 +66,5 @@ typings/
 #########################################
 ignore/
 dist/
+.vscode/
 mongo/

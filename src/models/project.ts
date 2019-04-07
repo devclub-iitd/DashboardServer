@@ -17,6 +17,14 @@ const projectSchema = new mongoose.Schema({
             ref: 'User'
         }]
     },
+    status: {
+        type: String,
+        required: false,
+        default: "IDEA",
+        uppercase: true,
+        trim: true,
+        enum:  ["IDEA","DOING","DEPLOYED"]
+    },
     startDate: {
         type: Date,
         required: true
