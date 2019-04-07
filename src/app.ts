@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import bluebird from "bluebird";
 import { MONGODB_URI } from "./utils/secrets";
 import {createDummyData} from "./utils/dummy";
+import logRequest from "./middlewares/logRequest";
 
 import userRouter from "./controllers/user";
 import projectRouter from "./controllers/project";
@@ -39,6 +40,7 @@ app.use(lusca.xssProtection(true));
 app.use(
   express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
 );
+app.use(logRequest);
 
 
 let apiRouter = express.Router();
