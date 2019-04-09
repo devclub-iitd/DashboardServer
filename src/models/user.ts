@@ -37,68 +37,85 @@ const userSchema = new mongoose.Schema({
     },
     entryNumber: {
         type: String,
-        required: true,
+        // required: true,
         uppercase: true,
         unique: true,
         minlength: 11,
         maxlength: 11,
         trim: true,
-        index: true
+        index: true,
+        default: 'XXXXXXXXXXX'
     },
     hostel: {
         type: String,
-        required: true,
+        // required: true,
         uppercase: true,
         minlength: 4,
         maxlength: 15,
-        trim: true
+        trim: true,
+        default: 'XXXX'
     },
     gender: {
         type: String,
-        required: true,
-        enum:  ["male","female"]
+        // required: true,
+        enum:  ["male","female"],
+        default: "male"
     },
     joinYear: {
         type: Date,
-        required: true
+        // required: true,
+        default: "01/01/2015",
     },
     gradYear: {
         type: Date,
-        required: true
+        required: true,
+        default: "01/01/2019",
     },
     birthDate: {
         type: Date,
-        required: true
+        // required: true,
+        default: "01/01/1997",
     },
     mobileNumber: {
         type: String,
-        required: true,
-        validate: [ (mob)=>isMobilePhone(mob,'any',{strictMode: true}), 'invalid mobile number']
+        // required: true,
+        validate: [ (mob)=>isMobilePhone(mob,'any',{strictMode: true}), 'invalid mobile number'],
+        default: "+919999999999",
     },
     hometown: {
         type: String,
-        required: true
+        // required: true,
+        default: "",
     },
     interests: {
         type: String,
-        required: true
+        // required: true,
+        default: "",
     },
     specialization: {
-        type: String
+        type: String,
+        // required: true,
+        default: "",
     },
     intro: {
         type: String,
-        required: true
+        // required: true,
+        default: "",
     },
     displayOnWebsite: {
         type: Boolean,
-        required: true,
+        // required: true,
         default: false
     },
     links: {
         type: Map,
-        of: String
+        of: String        
     },
+    isFilled:{
+        type: Boolean,
+        // required: true,
+        default: false
+    }
 }, { timestamps: true });
 
 

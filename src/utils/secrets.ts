@@ -14,6 +14,17 @@ export const ENVIRONMENT = process.env.NODE_ENV;
 // export const SESSION_SECRET = process.env["SESSION_SECRET"];
 export const MONGODB_URI: string = process.env["MONGODB_URI"] || "mongodb://localhost:27017/dashboard";
 
+export const GITHUB_CLIENT_ID: string = process.env["GITHUB_CLIENT_ID"] || ''
+export const GITHUB_CLIENT_SECRET: string = process.env["GITHUB_CLIENT_SECRET"] || ''
+
+export const JWT_SECRET: string = process.env["JWT_SECRET"] || ''
+
+
+if(GITHUB_CLIENT_ID == '' || GITHUB_CLIENT_SECRET == '' || JWT_SECRET == ''){
+    logger.error("No github client secret or github client id. Set environment variable.");
+    process.exit(1);
+}
+
 // if (!SESSION_SECRET) {
 //     logger.error("No client secret. Set SESSION_SECRET environment variable.");
 //     process.exit(1);
