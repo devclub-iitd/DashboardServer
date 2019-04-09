@@ -22,11 +22,13 @@
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
   },
   "dependencies": {
+    "@types/cors": "^2.8.4",
     "@types/errorhandler": "0.0.32",
     "@types/validator": "^10.11.0",
     "bluebird": "^3.5.4",
     "body-parser": "^1.18.3",
     "compression": "^1.7.4",
+    "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "errorhandler": "^1.5.0",
     "express": "^4.16.4",
