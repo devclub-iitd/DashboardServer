@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         // required: true,
         uppercase: true,
-        unique: true,
+        // unique: true,
         minlength: 11,
         maxlength: 11,
         trim: true,
