@@ -37,6 +37,10 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    origin_contact: {
+        type: String,
+        required: true
+    },
     perks: {
         type: String,
         required: true
@@ -59,6 +63,26 @@ const projectSchema = new mongoose.Schema({
         type: Map,
         of: String
     },
+    create_date: {
+        type: Date,
+        required: true,
+        default: "01/01/1997"
+    },
+    created_by: {
+        type: type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    update_date: {
+        type: Date,
+        required: true,
+        default: "01/01/1997"
+    },
+    updated_by: {
+        type: type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    }
 }, { timestamps: true });
 
 const Project = mongoose.model("Project", projectSchema);

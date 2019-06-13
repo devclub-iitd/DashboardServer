@@ -88,7 +88,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
                 'authToken': token,
                 'email': createdUser.email,
                 'name': createdUser.name,
-                'isFilled': createdUser.isFilled,
+                'privelege_level': createdUser.privelege_level,
                 '_id' : createdUser._id
             };
             res.send(createResponse('Login successful',resp_data));

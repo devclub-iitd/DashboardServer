@@ -44,21 +44,20 @@ const userSchema = new mongoose.Schema({
         maxlength: 11,
         trim: true,
         index: true,
-        default: 'XXXXXXXXXXX'
+        default: "XXXXXXXXXXX"
     },
     hostel: {
         type: String,
         // required: true,
         uppercase: true,
-        minlength: 4,
-        maxlength: 15,
+        enum: ["SATPURA", "GIRNAR", "UDAIGIRI", "ZANSKAR", "ARAVALI", "KUMAON", "VINDHYACHAL", "JWALAMUKHI", "NILGIRI", "KARAKORAM", "SHIVALIK", "KAILASH", "HIMADRI"]
         trim: true,
-        default: 'XXXX'
+        default: "SATPURA"
     },
     gender: {
         type: String,
         // required: true,
-        enum:  ["male","female"],
+        enum:  ["male", "female", "other"],
         default: "male"
     },
     joinYear: {
@@ -79,7 +78,7 @@ const userSchema = new mongoose.Schema({
     mobileNumber: {
         type: String,
         // required: true,
-        validate: [ (mob)=>isMobilePhone(mob,'any',{strictMode: true}), 'invalid mobile number'],
+        validate: [ (mob) => isMobilePhone(mob, 'any', { strictMode: true }), 'invalid mobile number'],
         default: "+919999999999",
     },
     hometown: {
@@ -111,10 +110,30 @@ const userSchema = new mongoose.Schema({
         type: Map,
         of: String        
     },
-    isFilled:{
-        type: Boolean,
-        // required: true,
-        default: false
+    create_date: {
+        type: Date,
+        required: true,
+        default: "01/01/1997"
+    },
+    created_by: {
+        type: type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
+    update_date: {
+        type: Date,
+        required: true,
+        default: "01/01/1997"
+    },
+    updated_by: {
+        type: type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    privelege_level: {
+        type: String,
+        enum: ["Admin", "Approved_User", "Unapproved_User"]
+        required: true,
+        default: "User"
     }
 }, { timestamps: true });
 

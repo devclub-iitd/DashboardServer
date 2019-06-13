@@ -22,7 +22,21 @@ const itemSchema = new mongoose.Schema({
         required: true,
         lowercase: true,
         trim: true,
-        enum:  ["project","event"]
+        enum:  ["project", "event", "resource"]
+    },
+    dueDate: {
+        type: Date
+    },
+    assignee: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }]
+    },
+    status: {
+        type: String,
+        trim: true,
+        required: true
     },
     labels: {
         type: [{
@@ -31,19 +45,30 @@ const itemSchema = new mongoose.Schema({
             trim: true
         }]
     },
-    assignee: {
-        type: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        }]
-    },
-    dueDate: {
-        type: Date
-    },
     completed: {
         type: Boolean,
         required: true,
         default: false
+    },
+    create_date: {
+        type: Date,
+        required: true,
+        default: "01/01/1997"
+    },
+    created_by: {
+        type: type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    update_date: {
+        type: Date,
+        required: true,
+        default: "01/01/1997"
+    },
+    updated_by: {
+        type: type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
     }
 }, { timestamps: true });
 
