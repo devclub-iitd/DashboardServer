@@ -3,7 +3,7 @@ import express from "express";
 import initCRUD from "../utils/crudFactory";
 
 const router = express.Router({mergeParams: true});
-const [create, get, update, all] = initCRUD(Resources);
+const [create, get, update, all, all_query] = initCRUD(Resources);
 
 router.post("/", create);
 router.get("/", all);

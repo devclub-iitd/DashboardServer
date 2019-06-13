@@ -108,11 +108,11 @@ const userSchema = new mongoose.Schema({
     },
     links: {
         type: Map,
-        of: String        
+        of: String
     },
     create_date: {
         type: Date,
-        required: true,
+        // required: true,
         default: "01/01/1997"
     },
     created_by: {
@@ -121,13 +121,13 @@ const userSchema = new mongoose.Schema({
     },
     update_date: {
         type: Date,
-        required: true,
+        // required: true,
         default: "01/01/1997"
     },
     updated_by: {
         type: type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        // required: true
     },
     privelege_level: {
         type: String,

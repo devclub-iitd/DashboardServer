@@ -9,10 +9,13 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * POST /
      * Create a document
      */
-    const create = (req: Request, res: Response, next: NextFunction) => {
+    const create = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
         return model.create(req.body)
         .then((createdDoc) => {
-            res.json(createResponse(`${name} created with details:`, createdDoc));
+            if (no_send) {
+            } else {
+                res.json(createResponse(`${name} created with details:`, createdDoc));
+            }
             return createdDoc;
         })
         .catch((err) => {
@@ -24,14 +27,17 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * GET /:id
      * Get an existing document.
      */
-    const get = (req: Request, res: Response, next: NextFunction) => {
+    const get = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
         return model.findById(req.params.id)
         .then((doc) => {
             if (!doc) {
                 next(createError(404,"Not found",`${name} does not exist with id ${req.params.id}`));
                 return doc;
             }
-            res.json(createResponse(`${name} found with details:`, doc));
+            if (no_send) {
+            } else {
+                res.json(createResponse(`${name} found with details:`, doc));
+            }
             return doc;
         })
         .catch((err) => {
@@ -43,14 +49,17 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * PUT /:id
      * Update an existing document by id .
      */
-    const update = (req: Request, res: Response, next: NextFunction) => {
+    const update = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
         return model.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true})
         .then((doc) => {
             if (!doc) {
                 next(createError(404,"Not found",`${name} does not exist with id ${req.params.docid}`));
                 return doc;
             }
-            res.json(createResponse(`${name} updated with new details as:`, doc));
+            if (no_send) {
+            } else {
+                res.json(createResponse(`${name} updated with new details as:`, doc));
+            }
             return doc;
         })
         .catch((err) => {
@@ -62,21 +71,47 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * GET /
      * Gets all documents
      */
-    const all = (req: Request, res: Response, next: NextFunction) => {
+    const all = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
         return model.find({})
         .then((docs) => {
             if (!docs) {
                 next(createError(404, "Not found", `No ${name}s found`));
                 return docs;
             }
-            res.json(createResponse(`${name}s found with details:`, docs));
+            if (no_send) {
+            } else {
+                res.json(createResponse(`${name}s found with details:`, docs));
+            }
             return docs;
         })
         .catch((err) => {
             next(err);
         });
     };
-    return [create, get, update, all];
+
+    /**
+     * GET /
+     * Gets all documents by query
+     */
+    const all_query = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
+        return model.find(req.body.query)
+        .then((docs) => {
+            if (!docs) {
+                next(createError(404, "Not found", `Not data found`));
+                return docs;
+            }
+            if (no_send) {
+            } else {
+                res.json(createResponse(`data found with details:`, docs));
+            }
+            return docs;
+        })
+        .catch((err) => {
+            next(err);
+        });
+    };
+
+    return [create, get, update, all, all_query];
 };
 
 export default initCRUD;
