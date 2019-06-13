@@ -7,13 +7,14 @@ import path from "path";
 import mongoose from "mongoose";
 import bluebird from "bluebird";
 import { MONGODB_URI } from "./utils/secrets";
-import {createDummyData} from "./utils/dummy";
+import { createDummyData } from "./utils/dummy";
 import logRequest from "./middlewares/logRequest";
 
 import userRouter from "./controllers/user";
 import projectRouter from "./controllers/project";
 import eventRouter from "./controllers/event";
 import itemRouter from "./controllers/item";
+import resourceRouter from "./controllers/resource";
 
 import { Request, Response, NextFunction } from "express";
 
@@ -48,6 +49,7 @@ app.use(logRequest);
 let apiRouter = express.Router();
 
 
+apiRouter.use('/resource', resourceRouter);
 apiRouter.use('/user', userRouter);
 apiRouter.use('/project', projectRouter);
 apiRouter.use('/event', eventRouter);
@@ -60,18 +62,18 @@ apiRouter.get('/', function(_, res) {
       "message": "Hooray! Welcome to dashboard api!"
   });
 });
-apiRouter.get('/dummy',function(_,res) {
+apiRouter.get('/dummy', function(_, res) {
   createDummyData()
-  .then((_)=>{
+  .then((_) => {
     return res.json({message: "All created!"});
   });
-})
+});
 
 
 
 app.use('/api', apiRouter);
 
-app.use(function(err:Error, req : Request, res: Response, next : NextFunction){
+app.use(function(err: Error, req: Request, res: Response, next: NextFunction) {
   res.status(err.status || 500);
   let e = new Error();
   e.message = err.message;
