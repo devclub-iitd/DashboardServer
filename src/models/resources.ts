@@ -43,7 +43,7 @@ const resourceSchema = new mongoose.Schema({
         default: "01/01/1997"
     },
     created_by: {
-        type: type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
@@ -53,7 +53,7 @@ const resourceSchema = new mongoose.Schema({
         default: "01/01/1997"
     },
     updated_by: {
-        type: type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     },

@@ -68,3 +68,4 @@ ignore/
 dist/
 .vscode/
 mongo/
+data/

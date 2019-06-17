@@ -38,7 +38,7 @@
     "express-validator": "^5.3.1",
     "jsonwebtoken": "^8.5.1",
     "lusca": "^1.6.1",
-    "mongodb": "^3.1.13",
+    "mongodb": "^3.2.7",
     "mongoose": "^5.4.21",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",

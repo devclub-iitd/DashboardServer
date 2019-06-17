@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         // required: true,
         uppercase: true,
-        enum: ["SATPURA", "GIRNAR", "UDAIGIRI", "ZANSKAR", "ARAVALI", "KUMAON", "VINDHYACHAL", "JWALAMUKHI", "NILGIRI", "KARAKORAM", "SHIVALIK", "KAILASH", "HIMADRI"]
+        enum: ["SATPURA", "GIRNAR", "UDAIGIRI", "ZANSKAR", "ARAVALI", "KUMAON", "VINDHYACHAL", "JWALAMUKHI", "NILGIRI", "KARAKORAM", "SHIVALIK", "KAILASH", "HIMADRI"],
         trim: true,
         default: "SATPURA"
     },
@@ -116,7 +116,7 @@ const userSchema = new mongoose.Schema({
         default: "01/01/1997"
     },
     created_by: {
-        type: type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
     update_date: {
@@ -125,13 +125,13 @@ const userSchema = new mongoose.Schema({
         default: "01/01/1997"
     },
     updated_by: {
-        type: type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         // required: true
     },
     privelege_level: {
         type: String,
-        enum: ["Admin", "Approved_User", "Unapproved_User"]
+        enum: ["Admin", "Approved_User", "Unapproved_User"],
         required: true,
         default: "User"
     }
