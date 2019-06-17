@@ -69,3 +69,4 @@ dist/
 .vscode/
 mongo/
 data/
+.gitsecret/keys/random_seed
