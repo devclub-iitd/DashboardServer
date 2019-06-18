@@ -8,7 +8,7 @@ const resourceSchema = new mongoose.Schema({
         trim: true
     },
     directory_year: {
-        type: Date,
+        type: String,
         required: true,
         trim: true
     },
@@ -39,23 +39,23 @@ const resourceSchema = new mongoose.Schema({
     },
     create_date: {
         type: Date,
-        required: true,
+        // required: true,
         default: "01/01/1997"
     },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        // required: true
     },
     update_date: {
         type: Date,
-        required: true,
+        // required: true,
         default: "01/01/1997"
     },
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        // required: true
     },
     new: {
         type: Boolean,

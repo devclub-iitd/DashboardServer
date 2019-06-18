@@ -12,7 +12,7 @@ export const ENVIRONMENT = process.env.NODE_ENV;
 // const prod = ENVIRONMENT === "production"; // Anything else is treated as 'dev'
 
 // export const SESSION_SECRET = process.env["SESSION_SECRET"];
-export const MONGODB_URI: string = process.env["MONGODB_URI"] || "mongodb://localhost:27017/dashboard";
+export const MONGODB_URI: string = process.env["MONGODB_URI_LOCAL"] || "mongodb://localhost:27017/dashboard";
 
 export const GITHUB_CLIENT_ID: string = process.env["GITHUB_CLIENT_ID"] || ''
 export const GITHUB_CLIENT_SECRET: string = process.env["GITHUB_CLIENT_SECRET"] || ''

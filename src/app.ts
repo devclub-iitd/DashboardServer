@@ -46,7 +46,7 @@ app.use(
 app.use(logRequest);
 
 
-let apiRouter = express.Router();
+const apiRouter = express.Router();
 
 
 apiRouter.use('/resource', resourceRouter);

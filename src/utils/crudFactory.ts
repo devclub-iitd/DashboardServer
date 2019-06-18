@@ -72,16 +72,17 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * Gets all documents
      */
     const all = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
+        console.log("yo");
         return model.find({})
         .then((docs) => {
             if (!docs) {
                 next(createError(404, "Not found", `No ${name}s found`));
                 return docs;
             }
-            if (no_send) {
-            } else {
+            // if (no_send) {
+            // } else {
                 res.json(createResponse(`${name}s found with details:`, docs));
-            }
+            // }
             return docs;
         })
         .catch((err) => {
@@ -94,6 +95,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * Gets all documents by query
      */
     const all_query = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
+        console.log("yo");
         return model.find(req.body.query)
         .then((docs) => {
             if (!docs) {

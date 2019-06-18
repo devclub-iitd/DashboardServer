@@ -1,9 +1,23 @@
-import item, { default as Item } from "../models/item";
+import { default as Item } from "../models/item";
 import { default as User } from "../models/user";
 import { default as Project } from "../models/project";
 import { default as Event } from "../models/event";
 import { default as Resources } from "../models/resources";
 import { Document } from "mongoose";
+
+const resources = [
+    {
+        internal_name: "Something",
+        directory_year: "Again Something",
+        subdirectory: "something something",
+        name: "Shashwat Human Resource",
+        archive: true,
+        description: "Yo yo",
+        url: "http://shashwat.com",
+        new: true,
+        displayOnWebsite: true
+    }
+];
 
 const users = [
     {
@@ -89,9 +103,9 @@ const projects = [
             url: "fs.devclub.in"
         },
         create_date: new Date(),
-        created_by: "Atishya",
+        // created_by: "Atishya",
         update_date: new Date(),
-        updated_by: "Atishya"
+        // updated_by: "Atishya"
     },
     {
         name: "Citadel",
@@ -110,9 +124,9 @@ const projects = [
             url: "study.devclub.in"
         },
         create_date: new Date(),
-        created_by: "Atishya",
+        // created_by: "Atishya",
         update_date: new Date(),
-        updated_by: "Atishya"
+        // updated_by: "Atishya"
     }
 ];
 
@@ -128,9 +142,9 @@ const events = [
         },
         assignee: "Atishya",
         create_date: new Date(),
-        created_by: "Atishya",
+        // created_by: "Atishya",
         update_date: new Date(),
-        updated_by: "Atishya"
+        // updated_by: "Atishya"
     }
 ];
 
@@ -142,12 +156,13 @@ const items = [
         type: "event",
         dueDate: new Date(),
         assignee: [2],
+        status:"IDEA",
         labels: ["Working","Important"],
         completed: false,
         create_date: new Date(),
-        created_by: "Atishya",
+        // created_by: "Atishya",
         update_date: new Date(),
-        updated_by: "Atishya"
+        // updated_by: "Atishya"
     },
     {
         parentId: ["events",0],
@@ -156,12 +171,13 @@ const items = [
         type: "event",
         labels: ["Done"],
         assignee: [0],
+        status:"IDEA",
         dueDate: new Date(),
         completed: true,
         create_date: new Date(),
-        created_by: "Atishya",
+        // created_by: "Atishya",
         update_date: new Date(),
-        updated_by: "Atishya"
+        // updated_by: "Atishya"
     },
     {
         parentId: ["projects",0],
@@ -170,12 +186,13 @@ const items = [
         type: "project",
         labels: ["Working"],
         assignee: [1],
+        status:"IDEA",
         dueDate: new Date(),
         completed: false,
         create_date: new Date(),
-        created_by: "Atishya",
+        // created_by: "Atishya",
         update_date: new Date(),
-        updated_by: "Atishya"
+        // updated_by: "Atishya"
     },
     {
         parentId: ["projects", 1],
@@ -184,12 +201,13 @@ const items = [
         type: "project",
         labels: ["Working"],
         assignee: [0, 1, 2],
+        status:"IDEA",
         dueDate: new Date(),
         completed: false,
         create_date: new Date(),
-        created_by: "Atishya",
+        // created_by: "Atishya",
         update_date: new Date(),
-        updated_by: "Atishya"
+        // updated_by: "Atishya"
     }
 ];
 
@@ -205,27 +223,31 @@ export const createDummyData = () => {
         }
         return Project.create(projects)
         .then((createdProjects) => {
-            return [createdProjects, createdUsers];
+            // return [createdProjects, createdUsers];
+            return Event.create(events)
+            .then(createdEvents => {
+                for (let i = 0; i < items.length; i++) {
+                    const idx: number = (items[i].parentId[1] as number);
+                    if (items[i].parentId[0] == "events") {
+                        items[i].parentId = createdEvents[idx].id;
+                    } else {
+                        items[i].parentId = createdProjects[idx].id;
+                    }
+                    const memIds = [];
+                    for (let j = 0; j < items[i].assignee.length; j++) {
+                        memIds.push(createdUsers[items[i].assignee[j]].id);
+                    }
+                    items[i].assignee = memIds;
+                }
+                return Item.create(items)
+                .then(my_items => {
+                    return Resources.create(resources)
+                    .then(x => [x, my_items, createdUsers, createdProjects, createdEvents]);
+                });
+            });
         });
     })
-    .then(([createdProjects, createdUsers]) => {
-        return Event.create(events)
-        .then(createdEvents => [createdEvents, createdProjects, createdUsers]);
-    })
-    .then(([createdEvents, createdProjects, createdUsers]) => {
-        for (let i = 0; i < items.length; i++) {
-            const idx: number = (items[i].parentId[1] as number);
-            if (items[i].parentId[0] == "events") {
-                items[i].parentId = createdEvents[idx].id;
-            } else {
-                items[i].parentId = createdProjects[idx].id;
-            }
-            const memIds = [];
-            for (let j = 0; j < items[i].assignee.length; j++) {
-                memIds.push(createdUsers[items[i].assignee[j]].id);
-            }
-            items[i].assignee = memIds;
-        }
-        return Item.create(items).then(x => [x, createdEvents, createdProjects, createdUsers]);
+    .catch((err) => {
+        return err;
     });
 };

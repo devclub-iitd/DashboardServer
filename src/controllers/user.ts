@@ -129,5 +129,6 @@ const getUnapproved = (req: Request, res: Response, next: NextFunction) => {
 // router.post('/register', register);
 // router.get('/unapproved', getUnapproved);
 router.get('/', all);
+router.get('/query/', all_query);
 
 export default router;

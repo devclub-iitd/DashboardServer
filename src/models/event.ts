@@ -35,23 +35,23 @@ const eventSchema = new mongoose.Schema({
     },
     create_date: {
         type: Date,
-        required: true,
+        // required: true,
         default: "01/01/1997"
     },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        // required: true
     },
     update_date: {
         type: Date,
-        required: true,
+        // required: true,
         default: "01/01/1997"
     },
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        // required: true
     }
 }, { timestamps: true });
 
