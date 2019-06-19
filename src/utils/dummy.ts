@@ -15,7 +15,10 @@ const resources = [
         description: "Yo yo",
         url: "http://shashwat.com",
         new: true,
-        displayOnWebsite: true
+        displayOnWebsite: true,
+        created_by: 0,
+        updated_by: 0
+
     }
 ];
 
@@ -102,10 +105,8 @@ const projects = [
         links: {
             url: "fs.devclub.in"
         },
-        create_date: new Date(),
-        // created_by: "Atishya",
-        update_date: new Date(),
-        // updated_by: "Atishya"
+        created_by: 0,
+        updated_by: 0
     },
     {
         name: "Citadel",
@@ -123,10 +124,8 @@ const projects = [
         links: {
             url: "study.devclub.in"
         },
-        create_date: new Date(),
-        // created_by: "Atishya",
-        update_date: new Date(),
-        // updated_by: "Atishya"
+        created_by: 0,
+        updated_by: 0
     }
 ];
 
@@ -141,73 +140,63 @@ const events = [
             url: "intro.devclub.in"
         },
         assignee: "Atishya",
-        create_date: new Date(),
-        // created_by: "Atishya",
-        update_date: new Date(),
-        // updated_by: "Atishya"
+        created_by: 0,
+        updated_by: 0
     }
 ];
 
 const items = [
     {
-        parentId: ["events",0],
+        parentId: 0,
         title: "Book Room",
         description: "Book LH108",
         type: "event",
         dueDate: new Date(),
         assignee: [2],
-        status:"IDEA",
+        status: "IDEA",
         labels: ["Working","Important"],
         completed: false,
-        create_date: new Date(),
-        // created_by: "Atishya",
-        update_date: new Date(),
-        // updated_by: "Atishya"
+        created_by: 0,
+        updated_by: 0
     },
     {
-        parentId: ["events",0],
+        parentId: 0,
         title: "Create Poster",
         description: "Create dashiing poster",
         type: "event",
         labels: ["Done"],
         assignee: [0],
-        status:"IDEA",
+        status: "IDEA",
         dueDate: new Date(),
         completed: true,
-        create_date: new Date(),
-        // created_by: "Atishya",
-        update_date: new Date(),
-        // updated_by: "Atishya"
+        created_by: 0,
+        updated_by: 0
     },
     {
-        parentId: ["projects",0],
+        parentId: 0,
         title: "Design Doc",
         description: "Create Design doc",
         type: "project",
         labels: ["Working"],
         assignee: [1],
-        status:"IDEA",
+        status: "IDEA",
         dueDate: new Date(),
         completed: false,
-        create_date: new Date(),
-        // created_by: "Atishya",
-        update_date: new Date(),
-        // updated_by: "Atishya"
+        created_by: 0,
+        updated_by: 0
     },
     {
-        parentId: ["projects", 1],
+        parentId: 0,
         title: "Implement",
         description: "Finish up",
-        type: "project",
+        type: "resource",
         labels: ["Working"],
         assignee: [0, 1, 2],
         status:"IDEA",
         dueDate: new Date(),
         completed: false,
-        create_date: new Date(),
-        // created_by: "Atishya",
-        update_date: new Date(),
-        // updated_by: "Atishya"
+        created_by: 0,
+        updated_by: 0
     }
 ];
 
@@ -220,29 +209,58 @@ export const createDummyData = () => {
                 memIds.push(createdUsers[projects[i].members[j]].id);
             }
             projects[i].members = memIds;
+            if (projects[i].created_by != undefined) {
+                projects[i].created_by = createdUsers[projects[i].created_by].id;
+            }
+            if (projects[i].updated_by != undefined) {
+                projects[i].updated_by = createdUsers[projects[i].updated_by].id;
+            }
         }
         return Project.create(projects)
         .then((createdProjects) => {
-            // return [createdProjects, createdUsers];
+            for (let i = 0; i < events.length; i++) {
+                if (events[i].created_by != undefined) {
+                    events[i].created_by = createdUsers[events[i].created_by].id;
+                }
+                if (resources[i].updated_by != undefined) {      
+                    events[i].updated_by = createdUsers[events[i].updated_by].id;
+                }
+            }
             return Event.create(events)
             .then(createdEvents => {
-                for (let i = 0; i < items.length; i++) {
-                    const idx: number = (items[i].parentId[1] as number);
-                    if (items[i].parentId[0] == "events") {
-                        items[i].parentId = createdEvents[idx].id;
-                    } else {
-                        items[i].parentId = createdProjects[idx].id;
+                for (let i = 0; i < resources.length; i++) {
+                    if (resources[i].created_by != undefined) {
+                        resources[i].created_by = createdUsers[resources[i].created_by].id;
                     }
-                    const memIds = [];
-                    for (let j = 0; j < items[i].assignee.length; j++) {
-                        memIds.push(createdUsers[items[i].assignee[j]].id);
+                    if (resources[i].updated_by != undefined) {
+                        resources[i].updated_by = createdUsers[resources[i].updated_by].id;
                     }
-                    items[i].assignee = memIds;
                 }
-                return Item.create(items)
-                .then(my_items => {
-                    return Resources.create(resources)
-                    .then(x => [x, my_items, createdUsers, createdProjects, createdEvents]);
+                return Resources.create(resources)
+                .then(createdResources => {
+                    for (let i = 0; i < items.length; i++) {
+                        const idx: number = (items[i].parentId as number);
+                        if (items[i].type == "event") {
+                            items[i].parentId = createdEvents[idx].id;
+                        } else if (items[i].type == "resource") {
+                            items[i].parentId = createdResources[idx].id;
+                        } else {
+                            items[i].parentId = createdProjects[idx].id;
+                        }
+                        const memIds = [];
+                        for (let j = 0; j < items[i].assignee.length; j++) {
+                            memIds.push(createdUsers[items[i].assignee[j]].id);
+                        }
+                        items[i].assignee = memIds;
+                        if (items[i].created_by != undefined) {
+                            items[i].created_by = createdUsers[items[i].created_by].id;
+                        }
+                        if (items[i].updated_by != undefined) {
+                            items[i].updated_by = createdUsers[items[i].updated_by].id;
+                        }
+                    }
+                    return Item.create(items)
+                    .then(x => [x, createdResources, createdUsers, createdProjects, createdEvents]);
                 });
             });
         });

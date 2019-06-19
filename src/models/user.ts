@@ -110,19 +110,9 @@ const userSchema = new mongoose.Schema({
         type: Map,
         of: String
     },
-    create_date: {
-        type: Date,
-        // required: true,
-        default: "01/01/1997"
-    },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
-    },
-    update_date: {
-        type: Date,
-        // required: true,
-        default: "01/01/1997"
     },
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,

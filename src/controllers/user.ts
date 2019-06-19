@@ -133,7 +133,7 @@ const foo = (req: Request, res: Response, next: NextFunction) => {
     return all(req, res, next);
 };
 
-router.get('/', all);
+router.get('/getAll/', all);
 router.get('/query/', all_query);
 
 export default router;

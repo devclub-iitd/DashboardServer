@@ -6,7 +6,7 @@ const router = express.Router({mergeParams: true});
 const [create, get, update, all, all_query] = initCRUD(Project);
 
 router.post('/', create);
-router.get('/', all);
+router.get('/getAll/', all);
 router.get('/:id', get);
 router.put('/:id', update);
 

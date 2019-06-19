@@ -37,20 +37,10 @@ const resourceSchema = new mongoose.Schema({
         validate: [ isURL, 'invalid url' ],
         default: "01/01/2019",
     },
-    create_date: {
-        type: Date,
-        // required: true,
-        default: "01/01/1997"
-    },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         // required: true
-    },
-    update_date: {
-        type: Date,
-        // required: true,
-        default: "01/01/1997"
     },
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
