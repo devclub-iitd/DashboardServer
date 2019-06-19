@@ -3,7 +3,7 @@ import { default as User } from "../models/user";
 import { default as Project } from "../models/project";
 import { default as Event } from "../models/event";
 import { default as Resources } from "../models/resources";
-import { Document } from "mongoose";
+// import { Document } from "mongoose";
 
 const resources = [
     {

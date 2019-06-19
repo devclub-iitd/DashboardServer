@@ -3,7 +3,8 @@ import express from "express";
 import initCRUD from "../utils/crudFactory";
 import { createResponse, createError } from "../utils/helper";
 import { Request, Response, NextFunction } from "express";
-import rp from "request-promise";
+// import rp from "request-promise";
+
 // import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET } from "../utils/secrets";
 // import logger from "../utils/logger";
 // import jwt from "jsonwebtoken";
@@ -11,30 +12,29 @@ import rp from "request-promise";
 
 const router = express.Router({mergeParams: true});
 const [create, get, update, all, all_query] = initCRUD(User);
+// const register = (req: Request, res: Response, next: NextFunction) => {
+//     req.body.privelege_level = "Unapproved_User";
+//     req.body.displayOnWebsite = false;
+//     create(req, res, next, true)
+//     .then((_) => {
+//         res.json(createResponse("Request sent to the Administrator", _));
+//     })
+//     .catch((err: any) => {
+//         res.json(createResponse("Error while registering", err));
+//     });
+// };
 
-const register = (req: Request, res: Response, next: NextFunction) => {
-    req.body.privelege_level = "Unapproved_User";
-    req.body.displayOnWebsite = false;
-    create(req, res, next, true)
-    .then((_) => {
-        res.json(createResponse("Request sent to the Administrator", _));
-    })
-    .catch((err: any) => {
-        res.json(createResponse("Error while registering", err));
-    });
-};
-
-const getUnapproved = (req: Request, res: Response, next: NextFunction) => {
-    const my_query = {privelege_level: "Unapproved_User"};
-    req.body.query = my_query;
-    all_query(req, res, next, true)
-    .then((data: any) => {
-        return res.json(createResponse("Results", data));
-    })
-    .catch((err) => {
-        return res.json(createResponse("Error", err));
-    });
-};
+// const getUnapproved = (req: Request, res: Response, next: NextFunction) => {
+//     const my_query = {privelege_level: "Unapproved_User"};
+//     req.body.query = my_query;
+//     all_query(req, res, next, true)
+//     .then((data: any) => {
+//         return res.json(createResponse("Results", data));
+//     })
+//     .catch((err) => {
+//         return res.json(createResponse("Error", err));
+//     });
+// };
 
 // const login = (req: Request, res: Response, next: NextFunction) => {
 
@@ -128,6 +128,11 @@ const getUnapproved = (req: Request, res: Response, next: NextFunction) => {
 // router.post('/github_login', login);
 // router.post('/register', register);
 // router.get('/unapproved', getUnapproved);
+
+const foo = (req: Request, res: Response, next: NextFunction) => {
+    return all(req, res, next);
+};
+
 router.get('/', all);
 router.get('/query/', all_query);
 

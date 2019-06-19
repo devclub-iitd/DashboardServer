@@ -9,11 +9,10 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * POST /
      * Create a document
      */
-    const create = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
+    const create = (req: Request, res: Response, next: NextFunction) => {
         return model.create(req.body)
         .then((createdDoc) => {
-            if (no_send) {
-            } else {
+            if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
                 res.json(createResponse(`${name} created with details:`, createdDoc));
             }
             return createdDoc;
@@ -27,15 +26,14 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * GET /:id
      * Get an existing document.
      */
-    const get = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
+    const get = (req: Request, res: Response, next: NextFunction) => {
         return model.findById(req.params.id)
         .then((doc) => {
             if (!doc) {
                 next(createError(404,"Not found",`${name} does not exist with id ${req.params.id}`));
                 return doc;
             }
-            if (no_send) {
-            } else {
+            if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
                 res.json(createResponse(`${name} found with details:`, doc));
             }
             return doc;
@@ -49,15 +47,14 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * PUT /:id
      * Update an existing document by id .
      */
-    const update = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
+    const update = (req: Request, res: Response, next: NextFunction) => {
         return model.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true})
         .then((doc) => {
             if (!doc) {
                 next(createError(404,"Not found",`${name} does not exist with id ${req.params.docid}`));
                 return doc;
             }
-            if (no_send) {
-            } else {
+            if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
                 res.json(createResponse(`${name} updated with new details as:`, doc));
             }
             return doc;
@@ -71,7 +68,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * GET /
      * Gets all documents
      */
-    const all = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
+    const all = (req: Request, res: Response, next: NextFunction) => {
         console.log("yo");
         return model.find({})
         .then((docs) => {
@@ -79,10 +76,9 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
                 next(createError(404, "Not found", `No ${name}s found`));
                 return docs;
             }
-            // if (no_send) {
-            // } else {
+            if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
                 res.json(createResponse(`${name}s found with details:`, docs));
-            // }
+            }
             return docs;
         })
         .catch((err) => {
@@ -94,16 +90,14 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * GET /
      * Gets all documents by query
      */
-    const all_query = (req: Request, res: Response, next: NextFunction, no_send?: boolean) => {
-        console.log("yo");
+    const all_query = (req: Request, res: Response, next: NextFunction) => {
         return model.find(req.body.query)
         .then((docs) => {
             if (!docs) {
                 next(createError(404, "Not found", `Not data found`));
                 return docs;
             }
-            if (no_send) {
-            } else {
+            if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
                 res.json(createResponse(`data found with details:`, docs));
             }
             return docs;

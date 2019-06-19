@@ -9,6 +9,7 @@ import bluebird from "bluebird";
 import { MONGODB_URI } from "./utils/secrets";
 import { createDummyData } from "./utils/dummy";
 import logRequest from "./middlewares/logRequest";
+const helmet = require('helmet')
 
 import userRouter from "./controllers/user";
 import projectRouter from "./controllers/project";
@@ -17,7 +18,6 @@ import itemRouter from "./controllers/item";
 import resourceRouter from "./controllers/resource";
 
 import { Request, Response, NextFunction } from "express";
-
 
 // Create Express server
 const app = express();
@@ -38,6 +38,7 @@ app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(helmet());
 app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
 app.use(
@@ -73,8 +74,8 @@ apiRouter.get('/dummy', function(_, res) {
 
 app.use('/api', apiRouter);
 
-app.use(function(err: Error, req: Request, res: Response, next: NextFunction) {
-  res.status(err.status || 500);
+app.use(function(err: Error, _0: Request, res: Response, _1: NextFunction) {
+  res.status(500);
   let e = new Error();
   e.message = err.message;
   e.name = err.name;

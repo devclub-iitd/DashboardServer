@@ -1,13 +1,13 @@
 import logger from "../utils/logger";
-import { Request,Response,NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 
 function logRequest(req: Request, res: Response, next: NextFunction) {
     // http://www.senchalabs.org/connect/responseTime.html
     var start = new Date();
-    if (res._responseTime) {
+    if ((<any>res)._responseTime) {
         return next();
     }
-    res._responseTime = true;
+    (<any>res)._responseTime = true;
 
     const ip = req.header('x-forwarded-for') || (req.connection && req.connection.remoteAddress) || '';
 
