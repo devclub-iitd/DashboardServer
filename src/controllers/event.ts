@@ -1,9 +1,9 @@
-import { default as Event } from "../models/event";
 import express from "express";
+import Event from "../models/event";
 import initCRUD from "../utils/crudFactory";
 
 const router = express.Router({mergeParams: true});
-const [create, get, update, all, all_query] = initCRUD(Event);
+const [create, get, update, all] = initCRUD(Event);
 
 router.post('/', create);
 router.get('/getAll/', all);
