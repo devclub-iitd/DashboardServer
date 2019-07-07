@@ -10,15 +10,19 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * Create a document
      */
     const create = (req: Request, res: Response, next: NextFunction) => {
-        return model.create(req.body)
-        .then((createdDoc) => {
-            if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
-                res.json(createResponse(`${name} created with details:`, createdDoc));
-            }
-            return createdDoc;
-        })
-        .catch((err) => {
-            next(err);
+        return new Promise <any> ((resolve, reject) => {
+            model.create(req.body)
+            .then((createdDoc) => {
+                if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                    res.json(createResponse(`${name} created with details:`, createdDoc));
+                }
+                resolve(createdDoc);
+                return createdDoc;
+            })
+            .catch((err) => {
+                reject(err);
+                next(err);
+            });
         });
     };
 
@@ -27,19 +31,24 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * Get an existing document.
      */
     const get = (req: Request, res: Response, next: NextFunction) => {
-        return model.findById(req.params.id)
-        .then((doc) => {
-            if (!doc) {
-                next(createError(404,"Not found",`${name} does not exist with id ${req.params.id}`));
+        return new Promise <any> ((resolve, reject) => {
+            model.findById(req.params.id)
+            .then((doc) => {
+                if (!doc) {
+                    next(createError(404,"Not found",`${name} does not exist with id ${req.params.id}`));
+                    return doc;
+                }
+                if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                    res.json(createResponse(`${name} found with details:`, doc));
+                }
+                resolve(doc);
                 return doc;
-            }
-            if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
-                res.json(createResponse(`${name} found with details:`, doc));
-            }
-            return doc;
-        })
-        .catch((err) => {
-            next(err);
+            })
+            .catch((err) => {
+                reject(err);
+                // return err;
+                next(err);
+            });
         });
     };
 
@@ -48,19 +57,23 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * Update an existing document by id .
      */
     const update = (req: Request, res: Response, next: NextFunction) => {
-        return model.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true})
-        .then((doc) => {
-            if (!doc) {
-                next(createError(404,"Not found",`${name} does not exist with id ${req.params.docid}`));
+        return new Promise <any> ((resolve, reject) => {
+            model.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true})
+            .then((doc) => {
+                if (!doc) {
+                    next(createError(404,"Not found",`${name} does not exist with id ${req.params.docid}`));
+                    return doc;
+                }
+                if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                    res.json(createResponse(`${name} updated with new details as:`, doc));
+                }
+                resolve(doc);
                 return doc;
-            }
-            if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
-                res.json(createResponse(`${name} updated with new details as:`, doc));
-            }
-            return doc;
-        })
-        .catch((err) => {
-            next(err);
+            })
+            .catch((err) => {
+                reject(err);
+                next(err);
+            });
         });
     };
 
@@ -69,20 +82,23 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * Gets all documents
      */
     const all = (req: Request, res: Response, next: NextFunction) => {
-        console.log("yo");
-        return model.find({})
-        .then((docs) => {
-            if (!docs) {
-                next(createError(404, "Not found", `No ${name}s found`));
+        return new Promise <any> ((resolve, reject) => {
+            model.find({})
+            .then((docs) => {
+                if (!docs) {
+                    next(createError(404, "Not found", `No ${name}s found`));
+                    return docs;
+                }
+                if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                    res.json(createResponse(`${name} found with details:`, docs));
+                }
+                resolve(docs);
                 return docs;
-            }
-            if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
-                res.json(createResponse(`${name} found with details:`, docs));
-            }
-            return docs;
-        })
-        .catch((err) => {
-            next(err);
+            })
+            .catch((err) => {
+                reject(err);
+                next(err);
+            });
         });
     };
 
@@ -91,19 +107,23 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * Gets all documents by query
      */
     const all_query = (req: Request, res: Response, next: NextFunction) => {
-        return model.find(req.body.query)
-        .then((docs) => {
-            if (!docs) {
-                next(createError(404, "Not found", `Not data found`));
+        return new Promise <any> ((resolve, reject) => {
+            model.find(req.body.query)
+            .then((docs) => {
+                if (!docs) {
+                    next(createError(404, "Not found", `Not data found`));
+                    return docs;
+                }
+                if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                    res.json(createResponse(`data found with details:`, docs));
+                }
+                resolve(docs);
                 return docs;
-            }
-            if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
-                res.json(createResponse(`data found with details:`, docs));
-            }
-            return docs;
-        })
-        .catch((err) => {
-            next(err);
+            })
+            .catch((err) => {
+                reject(err);
+                next(err);
+            });
         });
     };
 

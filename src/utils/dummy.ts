@@ -25,6 +25,7 @@ const resources = [
 const users = [
     {
         email: "suyash1212@gmail.com",
+        password: "1234",
         name: "Suyash Agrawal",
         entryNumber: "2015Cs10262",
         hostel: "Kumaon",
@@ -47,6 +48,7 @@ const users = [
     {
         email: "aman71197@gmail.com",
         name: "Aman Agrawal",
+        password: "1234",
         entryNumber: "2015Cs10210",
         hostel: "Kumaon",
         gender: "male",
@@ -68,6 +70,7 @@ const users = [
     {
         email: "lol@gmail.com",
         name: "LOLO",
+        password: "1234",
         entryNumber: "2015Cs10292",
         hostel: "Aravali",
         gender: "female",

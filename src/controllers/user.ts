@@ -6,35 +6,107 @@ import { Request, Response, NextFunction } from "express";
 // import rp from "request-promise";
 
 // import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET } from "../utils/secrets";
+import { JWT_SECRET } from "../utils/secrets";
 // import logger from "../utils/logger";
-// import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
 // import { checkToken, isSameUser } from "../middlewares/auth";
+const bcrypt = require("bcrypt");
+const SALT_WORK_FACTOR = 10;
 
 const router = express.Router({mergeParams: true});
 const [create, get, update, all, all_query] = initCRUD(User);
-// const register = (req: Request, res: Response, next: NextFunction) => {
-//     req.body.privelege_level = "Unapproved_User";
-//     req.body.displayOnWebsite = false;
-//     create(req, res, next, true)
-//     .then((_) => {
-//         res.json(createResponse("Request sent to the Administrator", _));
-//     })
-//     .catch((err: any) => {
-//         res.json(createResponse("Error while registering", err));
-//     });
-// };
 
-// const getUnapproved = (req: Request, res: Response, next: NextFunction) => {
-//     const my_query = {privelege_level: "Unapproved_User"};
-//     req.body.query = my_query;
-//     all_query(req, res, next, true)
-//     .then((data: any) => {
-//         return res.json(createResponse("Results", data));
-//     })
-//     .catch((err) => {
-//         return res.json(createResponse("Error", err));
-//     });
-// };
+const register = (req: Request, res: Response, next: NextFunction) => {
+    req.body.privelege_level = "Unapproved_User";
+    req.body.displayOnWebsite = false;
+    if (req.res == undefined) {
+        req.res = res;
+    }
+    if (req.res.locals == undefined) {
+        req.res.locals = {};
+    }
+    req.res.locals.no_send = true;
+    create(req, res, next)
+    .then((_: any) => {
+        res.json(createResponse("Request sent to the Administrator", _));
+    })
+    .catch((err: any) => {
+        res.json(createResponse("Error while registering", err));
+    });
+};
+
+const getUnapproved = (req: Request, res: Response, next: NextFunction) => {
+    const my_query = {privelege_level: "Unapproved_User"};
+    req.body.query = my_query;
+    if (req.res == undefined) {
+        req.res = res;
+    }
+    if (req.res.locals == undefined) {
+        req.res.locals = {};
+    }
+    req.res.locals.no_send = true;
+    all_query(req, res, next)
+    .then((data: any) => {
+        return res.json(createResponse("Results", data));
+    })
+    .catch((err) => {
+        return res.json(createResponse("Error", err));
+    });
+};
+
+const login = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body) {
+        next(createError(400, "Bad request", "Received request with no body"));
+    }
+
+    const my_password = req.body.password;
+    const my_entryNumber = req.body.entryNumber;
+
+    // Retrieve the username from the database
+    User.findOne({entryNumber: my_entryNumber}).then((userDoc) => {
+        if (!userDoc) {
+            next(createError(404, "Not found", `User with entryNumber ${my_entryNumber} does not exist`));
+        } else {
+            const userObject = userDoc.toObject();
+
+            // Get the password
+            const userPassword = userObject.password;
+
+            if (userObject.privelege_level == "Unapproved_User") {
+                next(createError(500, "You are not yet approved", ``));
+            }
+
+            console.log(userPassword);
+            console.log(my_password);
+            bcrypt.compare(my_password, userPassword, function(err, _) {
+                if (err) {
+                    next(createError(400, "Incorrect login", `User with username ${my_entryNumber} does not exist or incorrect password entered`));
+                }
+                const payload = {user: userObject.entryNumber};
+                const options = {expiresIn: "2d", issuer: "devclub-dashboard"};
+                const secret = JWT_SECRET as Secret;
+
+                if (secret === undefined) {
+                    next(createError(500, "Incorrect configuration", `Token secret key not initialized`));
+                }
+
+                const token = jwt.sign(payload, secret, options);
+
+                const result = {
+                    token: token,
+                    status: 200,
+                    result: userObject
+                };
+
+                res.status(200).send(result);
+                return result;
+            });
+        }
+    })
+    .catch((err) => {
+        next(err);
+    });
+};
 
 // const login = (req: Request, res: Response, next: NextFunction) => {
 
@@ -125,15 +197,56 @@ const [create, get, update, all, all_query] = initCRUD(User);
 // router.get('/', checkToken, all);
 // router.get('/:id', checkToken, get);
 // router.put('/:id', checkToken, isSameUser, update);
-// router.post('/github_login', login);
-// router.post('/register', register);
-// router.get('/unapproved', getUnapproved);
 
 const foo = (req: Request, res: Response, next: NextFunction) => {
     return all(req, res, next);
 };
 
-router.get('/getAll/', all);
-router.get('/query/', all_query);
+const pswd_hash = (req: Request, res: Response, next: NextFunction) => {
+    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+        if (err) console.log(err);
+        // hash the password using our new salt
+        bcrypt.hash(req.body.password, salt, function (err, hash) {
+            if (err) console.log(err);
+            req.body.password = hash;
+            next();
+        });
+    });
+};
+
+const approve_user = (req: Request, res: Response, next: NextFunction) => {
+    const my_query = {entryNumber: req.body.entryNumber};
+    req.body.query = my_query;
+    if (req.res == undefined) {
+        req.res = res;
+    }
+    if (req.res.locals == undefined) {
+        req.res.locals = {};
+    }
+    req.res.locals.no_send = true;
+    all_query(req, res, next)
+    .then((data: any) => {
+        req.body = {};
+        req.body.privelege_level = "Approved_User";
+        req.params.id = data[0]["_id"];
+        update(req, res, next)
+        .then((fresh_data: any) => {
+            res.json(createResponse("Approved User", fresh_data));
+        })
+        .catch((err: any) => {
+            res.json(createResponse("Error while registering", err));
+        });
+    })
+    .catch((err: any) => {
+        res.json(createResponse("Error while registering", err));
+    });
+};
+
+router.post("/login", login);
+router.post("/approve", approve_user); 		// Add a middleware to checkAdmin
+router.get("/getAll/", all);
+router.get("/query/", all_query);
+router.post("/register", pswd_hash, register);
+router.get("/unapproved", getUnapproved);
 
 export default router;
