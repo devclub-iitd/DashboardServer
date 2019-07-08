@@ -1,20 +1,20 @@
+import { default as User } from "../models/user";
 import express from "express";
-import User from "../models/user";
 import initCRUD from "../utils/crudFactory";
+import { createResponse, createError } from "../utils/helper";
+import { Request, Response, NextFunction } from "express";
 // import rp from "request-promise";
 
 // import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET } from "../utils/secrets";
 import { JWT_SECRET } from "../utils/secrets";
 // import logger from "../utils/logger";
 import jwt, { Secret } from "jsonwebtoken";
-import { createResponse, createError } from "../utils/helper";
-import { Request, Response, NextFunction } from "express";
 // import { checkToken, isSameUser } from "../middlewares/auth";
 const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
 
 const router = express.Router({mergeParams: true});
-const [create, , update, all, all_query] = initCRUD(User);
+const [create, get, update, all, all_query] = initCRUD(User);
 
 const register = (req: Request, res: Response, next: NextFunction) => {
     req.body.privelege_level = "Unapproved_User";
@@ -78,7 +78,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
 
             console.log(userPassword);
             console.log(my_password);
-            bcrypt.compare(my_password, userPassword, function(err: any, _: any) {
+            bcrypt.compare(my_password, userPassword, function(err, _) {
                 if (err) {
                     next(createError(400, "Incorrect login", `User with username ${my_entryNumber} does not exist or incorrect password entered`));
                 }
@@ -198,15 +198,15 @@ const login = (req: Request, res: Response, next: NextFunction) => {
 // router.get('/:id', checkToken, get);
 // router.put('/:id', checkToken, isSameUser, update);
 
-// const foo = (req: Request, res: Response, next: NextFunction) => {
-//     return all(req, res, next);
-// };
+const foo = (req: Request, res: Response, next: NextFunction) => {
+    return all(req, res, next);
+};
 
-const pswd_hash = (req: Request, _: Response, next: NextFunction) => {
-    bcrypt.genSalt(SALT_WORK_FACTOR, function (err: any, salt: any) {
+const pswd_hash = (req: Request, res: Response, next: NextFunction) => {
+    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
         if (err) console.log(err);
         // hash the password using our new salt
-        bcrypt.hash(req.body.password, salt, function (err: any, hash: any) {
+        bcrypt.hash(req.body.password, salt, function (err, hash) {
             if (err) console.log(err);
             req.body.password = hash;
             next();

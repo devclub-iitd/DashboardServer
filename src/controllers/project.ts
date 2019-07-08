@@ -1,9 +1,9 @@
-import { default as Project } from "../models/project";
 import express from "express";
+import Project from "../models/project";
 import initCRUD from "../utils/crudFactory";
 
 const router = express.Router({mergeParams: true});
-const [create, get, update, all, all_query] = initCRUD(Project);
+const [create, get, update, all] = initCRUD(Project);
 
 router.post('/', create);
 router.get('/getAll/', all);

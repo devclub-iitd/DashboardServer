@@ -1,4 +1,6 @@
 import express from "express";
+import { Request, Response, NextFunction } from "express";
+import helmet from "helmet";
 import compression from "compression";  // compresses requests
 import bodyParser from "body-parser";
 import lusca from "lusca";
@@ -7,9 +9,8 @@ import path from "path";
 import mongoose from "mongoose";
 import bluebird from "bluebird";
 import { MONGODB_URI } from "./utils/secrets";
-import { createDummyData } from "./utils/dummy";
+import createDummyData from "./utils/dummy";
 import logRequest from "./middlewares/logRequest";
-const helmet = require('helmet')
 
 import userRouter from "./controllers/user";
 import projectRouter from "./controllers/project";
@@ -17,7 +18,6 @@ import eventRouter from "./controllers/event";
 import itemRouter from "./controllers/item";
 import resourceRouter from "./controllers/resource";
 
-import { Request, Response, NextFunction } from "express";
 
 // Create Express server
 const app = express();
@@ -58,16 +58,16 @@ apiRouter.use('/item', itemRouter);
 
 // test route to make sure everything is working
 apiRouter.get('/', function(_, res) {
-    res.json({
-      "data": null,
-      "message": "Hooray! Welcome to dashboard api!"
+  res.json({
+    "data": null,
+    "message": "Hooray! Welcome to dashboard api!"
   });
 });
 apiRouter.get('/dummy', function(_, res) {
   createDummyData()
-  .then((_) => {
-    return res.json({message: "All created!"});
-  });
+    .then(() => {
+      return res.json({message: "All created!"});
+    });
 });
 
 

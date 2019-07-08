@@ -1,12 +1,12 @@
-import logger from "./logger";
 import dotenv from "dotenv";
 import fs from "fs";
+import logger from "./logger";
 
 if (fs.existsSync(".env")) {
-    logger.debug("Using .env file to supply config environment variables");
-    dotenv.config({ path: ".env" });
+  logger.debug("Using .env file to supply config environment variables");
+  dotenv.config({ path: ".env" });
 } else {
-    logger.warn("Please create a .env file for environment variables");
+  logger.warn("Please create a .env file for environment variables");
 }
 export const ENVIRONMENT = process.env.NODE_ENV;
 // const prod = ENVIRONMENT === "production"; // Anything else is treated as 'dev'
@@ -21,8 +21,8 @@ export const JWT_SECRET: string = process.env["JWT_SECRET"] || ''
 
 
 if(GITHUB_CLIENT_ID == '' || GITHUB_CLIENT_SECRET == '' || JWT_SECRET == ''){
-    logger.error("No github client secret or github client id. Set environment variable.");
-    process.exit(1);
+  logger.error("No github client secret or github client id. Set environment variable.");
+  process.exit(1);
 }
 
 // if (!SESSION_SECRET) {
@@ -31,6 +31,6 @@ if(GITHUB_CLIENT_ID == '' || GITHUB_CLIENT_SECRET == '' || JWT_SECRET == ''){
 // }
 
 if (!MONGODB_URI) {
-    logger.error("No mongo connection string. Set MONGODB_URI environment variable.");
-    process.exit(1);
+  logger.error("No mongo connection string. Set MONGODB_URI environment variable.");
+  process.exit(1);
 }

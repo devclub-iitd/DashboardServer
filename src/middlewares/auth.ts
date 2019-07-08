@@ -1,16 +1,16 @@
 import jwt from "jsonwebtoken";
 
-import { JWT_SECRET } from "../utils/secrets";
 import { Request, Response, NextFunction } from "express";
+import { JWT_SECRET } from "../utils/secrets";
 import { createError } from "../utils/helper";
 
 
 export const checkToken = (req: Request, res: Response, next: NextFunction) => {
   let token = req.header("x-access-token") || req.header("authorization"); // Express headers are auto converted to lowercase
   if (token) {
-    if (token.startsWith("Bearer ")) {
-        // Remove Bearer from string
-        token = token.slice(7, token.length);
+    if (token.startsWith('Bearer ')) {
+      // Remove Bearer from string
+      token = token.slice(7, token.length);
     }
     jwt.verify(token, JWT_SECRET, (err, userDecoded) => {
       if (err) {
@@ -27,10 +27,10 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
 
 
 export const isSameUser  = (req: Request, res: Response, next: NextFunction) => {
-    if (res.locals.logged_user == req.params.id) {
-        next();
-    }
-    else {
-        next(createError(401, "Unauthorized", "User is unauthorized for this endpoint. Token is invalid"));
-    }
+  if(res.locals.logged_user == req.params.id){
+    next()
+  }
+  else{
+    next(createError(401,'Unauthorized','User is unauthorized for this endpoint. Token is invalid'))
+  }
 };
