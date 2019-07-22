@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:10.6.0
 
 RUN mkdir /code
 WORKDIR /code
