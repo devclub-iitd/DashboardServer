@@ -12,7 +12,7 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
       // Remove Bearer from string
       token = token.slice(7, token.length);
     }
-    jwt.verify(token, JWT_SECRET, (err, userDecoded) => {
+    jwt.verify(token, JWT_SECRET, (err, userDecoded: any) => {
       if (err) {
         next(createError(401, "Unauthorized", "User is unauthorized. Token is invalid"));
       } else {

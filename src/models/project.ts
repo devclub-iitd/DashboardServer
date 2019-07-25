@@ -25,11 +25,11 @@ const projectSchema = new mongoose.Schema({
     trim: true,
     enum:  ["IDEA","DOING","DEPLOYED"]
   },
-  startDate: {
+  start_date: {
     type: Date,
     required: true
   },
-  endDate: {
+  end_date: {
     type: Date,
     required: true
   },
@@ -49,17 +49,22 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  displayOnWebsite: {
+  display_on_website: {
     type: Boolean,
     required: true,
     default: false
   },
-  isInternal: {
+  is_internal: {
     type: Boolean,
     required: true,
     default: true
   },
-  links: {
+  showcase: {
+    type: Boolean,
+    required: true,
+    default: false
+  },  
+  url: {
     type: Map,
     of: String
   },

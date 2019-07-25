@@ -24,7 +24,7 @@ const itemSchema = new mongoose.Schema({
     trim: true,
     enum:  ["project", "event", "resource"]
   },
-  dueDate: {
+  due_date: {
     type: Date
   },
   assignee: {

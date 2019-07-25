@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  entryNumber: {
+  entry_no: {
     type: String,
     // required: true,
     uppercase: true,
@@ -65,22 +65,22 @@ const userSchema = new mongoose.Schema({
     enum:  ["male", "female", "other"],
     default: "male"
   },
-  joinYear: {
+  join_year: {
     type: Date,
     // required: true,
     default: "01/01/2015",
   },
-  gradYear: {
+  grad_year: {
     type: Date,
     required: true,
     default: "01/01/2019",
   },
-  birthDate: {
+  birth_date: {
     type: Date,
     // required: true,
     default: "01/01/1997",
   },
-  mobileNumber: {
+  mobile_number: {
     type: String,
     // required: true,
     validate: [ (mob) => isMobilePhone(mob, 'any', { strictMode: true }), 'invalid mobile number'],
@@ -106,12 +106,12 @@ const userSchema = new mongoose.Schema({
     // required: true,
     default: "",
   },
-  displayOnWebsite: {
+  display_on_website: {
     type: Boolean,
     // required: true,
     default: false
   },
-  links: {
+  url: {
     type: Map,
     of: String
   },

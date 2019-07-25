@@ -11,20 +11,24 @@ const eventSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  startDate: {
+  start_date: {
     type: Date,
     required: true
   },
-  endDate: {
+  end_date: {
     type: Date,
     required: true
   },
-  displayOnWebsite: {
+  embed_code: {
+    type: String,
+    required: true
+  },
+  display_on_website: {
     type: Boolean,
     required: true,
     default: false
   },
-  links: {
+  url: {
     type: Map,
     of: String
   },

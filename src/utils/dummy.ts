@@ -15,7 +15,7 @@ const resources = [
     description: "Yo yo",
     url: "http://shashwat.com",
     new: true,
-    displayOnWebsite: true,
+    display_on_website: true,
     created_by: 0,
     updated_by: 0
 
@@ -26,20 +26,20 @@ const users = [
   {
     email: "suyash1212@gmail.com",
     name: "Suyash Agrawal",
-    entryNumber: "2015Cs10262",
+    entry_no: "2015Cs10262",
     hostel: "Kumaon",
     password: "1234",
     gender: "male",
-    joinYear: new Date(),
-    gradYear: new Date(),
-    birthDate: new Date(),
-    mobileNumber: "+919757866783",
+    join_year: new Date(),
+    grad_year: new Date(),
+    birth_date: new Date(),
+    mobile_number: "+919757866783",
     hometown: "Satna",
     interests: "Satna",
     specialization: "Satna",
     intro: "Satna",
-    displayOnWebsite: true,
-    links: {
+    display_on_website: true,
+    url: {
       "github": "hahahahahaha",
       "photo": "hahahahahaha"
     },
@@ -49,19 +49,19 @@ const users = [
     email: "aman71197@gmail.com",
     name: "Aman Agrawal",
     password: "1234",
-    entryNumber: "2015Cs10210",
+    entry_no: "2015Cs10210",
     hostel: "Kumaon",
     gender: "male",
-    joinYear: new Date(),
-    gradYear: new Date(),
-    birthDate: new Date(),
-    mobileNumber: "+919988776549",
+    join_year: new Date(),
+    grad_year: new Date(),
+    birth_date: new Date(),
+    mobile_number: "+919988776549",
     hometown: "Satna",
     interests: "Satna",
     specialization: "Satna",
     intro: "Satna",
-    displayOnWebsite: true,
-    links: {
+    display_on_website: true,
+    url: {
       "github": "kol",
       "photo": "kol"
     },
@@ -71,19 +71,19 @@ const users = [
     email: "lol@gmail.com",
     name: "LOLO",
     password: "1234",
-    entryNumber: "2015Cs10292",
+    entry_no: "2015Cs10292",
     hostel: "Aravali",
     gender: "female",
-    joinYear: new Date(),
-    gradYear: new Date(),
-    birthDate: new Date(),
-    mobileNumber: "+919017955555",
+    join_year: new Date(),
+    grad_year: new Date(),
+    birth_date: new Date(),
+    mobile_number: "+919017955555",
     hometown: "Satna",
     interests: "Satna",
     specialization: "Satna",
     intro: "Satna",
-    displayOnWebsite: false,
-    links: {
+    display_on_website: false,
+    url: {
       "github": "lol",
       "photo": "lol"
     },
@@ -97,15 +97,15 @@ const projects = [
     description: "FileSend",
     members: [0,1],
     status: "IDEA",
-    startDate: new Date(),
-    endDate: new Date(),
+    start_date: new Date(),
+    end_date: new Date(),
     origin: "self",
     origin_contact: "989898989",
     perks: "no perks",
     requirements: "it should work",
-    displayOnWebsite: true,
-    isInternal: false,
-    links: {
+    display_on_website: true,
+    is_internal: false,
+    url: {
       url: "fs.devclub.in"
     },
     created_by: 0,
@@ -116,15 +116,15 @@ const projects = [
     description: "Citadel",
     members: [0,2],
     status: "DOING",
-    startDate: new Date(),
-    endDate: new Date(),
+    start_date: new Date(),
+    end_date: new Date(),
     origin: "self",
     origin_contact: "6654654",
     perks: "no perks",
     requirements: "it should work",
-    displayOnWebsite: true,
-    isInternal: true,
-    links: {
+    display_on_website: true,
+    is_internal: true,
+    url: {
       url: "study.devclub.in"
     },
     created_by: 0,
@@ -136,12 +136,13 @@ const events = [
   {
     name: "Introduction",
     description: "intro to devclub",
-    startDate: new Date(),
-    endDate: new Date(),
-    displayOnWebsite: true,
-    links: {
+    start_date: new Date(),
+    end_date: new Date(),
+    display_on_website: true,
+    url: {
       url: "intro.devclub.in"
     },
+    embed_code: "Bla Bla",
     assignee: "Atishya",
     created_by: 0,
     updated_by: 0
@@ -154,7 +155,7 @@ const items = [
     title: "Book Room",
     description: "Book LH108",
     type: "event",
-    dueDate: new Date(),
+    due_date: new Date(),
     assignee: [2],
     status: "IDEA",
     labels: ["Working","Important"],
@@ -170,7 +171,7 @@ const items = [
     labels: ["Done"],
     assignee: [0],
     status: "IDEA",
-    dueDate: new Date(),
+    due_date: new Date(),
     completed: true,
     created_by: 0,
     updated_by: 0
@@ -183,7 +184,7 @@ const items = [
     labels: ["Working"],
     assignee: [1],
     status: "IDEA",
-    dueDate: new Date(),
+    due_date: new Date(),
     completed: false,
     created_by: 0,
     updated_by: 0
@@ -196,7 +197,7 @@ const items = [
     labels: ["Working"],
     assignee: [0, 1, 2],
     status:"IDEA",
-    dueDate: new Date(),
+    due_date: new Date(),
     completed: false,
     created_by: 0,
     updated_by: 0
