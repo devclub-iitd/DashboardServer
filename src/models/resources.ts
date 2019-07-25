@@ -52,7 +52,7 @@ const resourceSchema = new mongoose.Schema({
     required: true,
     default: false
   },
-  displayOnWebsite: {
+  display_on_website: {
     type: Boolean,
     required: true,
     default: false
