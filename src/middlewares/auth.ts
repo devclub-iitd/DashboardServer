@@ -16,6 +16,7 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
       if (err) {
         next(createError(401, "Unauthorized", "User is unauthorized. Token is invalid"));
       } else {
+
         res.locals.logged_user = userDecoded["_id"];
         next();
       }
