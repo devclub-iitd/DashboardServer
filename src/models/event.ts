@@ -17,7 +17,7 @@ const eventSchema = new mongoose.Schema({
   },
   end_date: {
     type: Date,
-    required: true
+    // required: true
   },
   embed_code: {
     type: String,
@@ -34,7 +34,7 @@ const eventSchema = new mongoose.Schema({
   },
   assignee: {
     type: String,
-    required: true,
+    // required: true,
     trim: true
   },
   created_by: {

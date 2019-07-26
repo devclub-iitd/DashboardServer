@@ -23,7 +23,7 @@ const projectSchema = new mongoose.Schema({
     default: "IDEA",
     uppercase: true,
     trim: true,
-    enum:  ["IDEA","DOING","DEPLOYED"]
+    enum:  ["IDEA","ONGOING","DEPLOYED"]
   },
   start_date: {
     type: Date,
@@ -31,7 +31,7 @@ const projectSchema = new mongoose.Schema({
   },
   end_date: {
     type: Date,
-    required: true
+    // required: true
   },
   origin: {
     type: String,
@@ -64,6 +64,12 @@ const projectSchema = new mongoose.Schema({
     required: true,
     default: false
   },  
+  labels: {
+    type: [{
+      type: String,
+      lowercase: true
+    }]
+  },
   url: {
     type: Map,
     of: String

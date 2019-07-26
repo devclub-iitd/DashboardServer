@@ -18,7 +18,7 @@ const [create, , update, all, all_query] = initCRUD(User);
 
 const register = (req: Request, res: Response, next: NextFunction) => {
     req.body.privelege_level = "Unapproved_User";
-    req.body.displayOnWebsite = false;
+    req.body.display_on_website = false;
     if (req.res == undefined) {
         req.res = res;
     }
@@ -60,10 +60,10 @@ const login = (req: Request, res: Response, next: NextFunction) => {
     }
 
     const my_password = req.body.password;
-    const my_entryNumber = req.body.entryNumber;
+    const my_entryNumber = req.body.entry_no;
 
     // Retrieve the username from the database
-    User.findOne({entryNumber: my_entryNumber}).then((userDoc) => {
+    User.findOne({entry_no: my_entryNumber}).then((userDoc) => {
         if (!userDoc) {
             next(createError(404, "Not found", `User with entryNumber ${my_entryNumber} does not exist`));
         } else {
@@ -82,7 +82,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
                 if (err) {
                     next(createError(400, "Incorrect login", `User with username ${my_entryNumber} does not exist or incorrect password entered`));
                 }
-                const payload = {user: userObject.entryNumber};
+                const payload = {user: userObject.entry_no};
                 const options = {expiresIn: "2d", issuer: "devclub-dashboard"};
                 const secret = JWT_SECRET as Secret;
 
@@ -215,7 +215,7 @@ const pswd_hash = (req: Request, _: Response, next: NextFunction) => {
 };
 
 const approve_user = (req: Request, res: Response, next: NextFunction) => {
-    const my_query = {entryNumber: req.body.entryNumber};
+    const my_query = {entry_no: req.body.entry_no};
     req.body.query = my_query;
     if (req.res == undefined) {
         req.res = res;
@@ -242,6 +242,7 @@ const approve_user = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
+router.post('/', create);
 router.post("/login", login);
 router.post("/approve", approve_user); 		// Add a middleware to checkAdmin
 router.get("/getAll/", all);

@@ -11,10 +11,10 @@ const resources = [
     directory_year: "Again Something",
     subdirectory: "something something",
     name: "Shashwat Human Resource",
-    archive: true,
+    archive: "true",
     description: "Yo yo",
     url: "http://shashwat.com",
-    new: true,
+    new: "true",
     display_on_website: true,
     created_by: 0,
     updated_by: 0
@@ -37,6 +37,7 @@ const users = [
     hometown: "Satna",
     interests: "Satna",
     specialization: "Satna",
+    category: "Senior Undergraduate",
     intro: "Satna",
     display_on_website: true,
     url: {
@@ -59,6 +60,7 @@ const users = [
     hometown: "Satna",
     interests: "Satna",
     specialization: "Satna",
+    category: "Senior Undergraduate",
     intro: "Satna",
     display_on_website: true,
     url: {
@@ -81,6 +83,7 @@ const users = [
     hometown: "Satna",
     interests: "Satna",
     specialization: "Satna",
+    category: "Senior Undergraduate",
     intro: "Satna",
     display_on_website: false,
     url: {
@@ -115,7 +118,7 @@ const projects = [
     name: "Citadel",
     description: "Citadel",
     members: [0,2],
-    status: "DOING",
+    status: "ONGOING",
     start_date: new Date(),
     end_date: new Date(),
     origin: "self",

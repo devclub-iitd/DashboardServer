@@ -106,6 +106,10 @@ const userSchema = new mongoose.Schema({
     // required: true,
     default: "",
   },
+  category: {
+    type: String,
+    required: true
+  },
   display_on_website: {
     type: Boolean,
     // required: true,
