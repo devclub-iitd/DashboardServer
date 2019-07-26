@@ -8,7 +8,7 @@ const projectSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
+    // required: true,
     trim: true
   },
   members: {
@@ -27,7 +27,7 @@ const projectSchema = new mongoose.Schema({
   },
   start_date: {
     type: Date,
-    required: true
+    // required: true
   },
   end_date: {
     type: Date,
@@ -35,19 +35,19 @@ const projectSchema = new mongoose.Schema({
   },
   origin: {
     type: String,
-    required: true
+    // required: true
   },
   origin_contact: {
     type: String,
-    required: true
+    // required: true
   },
   perks: {
     type: String,
-    required: true
+    // required: true
   },
   requirements: {
     type: String,
-    required: true
+    // required: true
   },
   display_on_website: {
     type: Boolean,

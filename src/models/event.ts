@@ -8,12 +8,12 @@ const eventSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
+    // required: true,
     trim: true
   },
   start_date: {
     type: Date,
-    required: true
+    // required: true
   },
   end_date: {
     type: Date,
@@ -21,7 +21,7 @@ const eventSchema = new mongoose.Schema({
   },
   embed_code: {
     type: String,
-    required: true
+    // required: true
   },
   display_on_website: {
     type: Boolean,

@@ -35,7 +35,7 @@ mongoose.connect(mongoUrl, {useNewUrlParser: true}).then(
 // Express configuration
 app.set("port", process.env.PORT);
 app.use(compression());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/json' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
