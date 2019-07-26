@@ -7,8 +7,5 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 
-RUN npm run build-ts
+ENTRYPOINT ["/code/entry-point.sh"] 
 
-RUN npm run watch-node
-
-EXPOSE 3000

@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   database:
-    image: "mongo:latest"
+    image: "${REGISTRY_NAME}mongo:latest"
     volumes:
       - clubdb:/data/db
     networks:
@@ -10,7 +10,7 @@ services:
     restart: "unless-stopped"
   dashboard:
     build: .
-    # image: "${REGISTRY_NAME}devclubiitd/dashboard:0.1"
+    image: "${REGISTRY_NAME}devclubiitd/dashboard:0.1"
     ports:
       - ${PORT}:${PORT}
     healthcheck:
