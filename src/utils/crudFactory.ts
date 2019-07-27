@@ -10,20 +10,30 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * Create a document
      */
     const create = (req: Request, res: Response, next: NextFunction) => {
+        console.log("CREATE CREATE CREATE");
+        console.log(req.body);
+        
         return new Promise <any> ((resolve, reject) => {
+            console.log("Andar AAye?")
             model.create(req.body)
             .then((createdDoc) => {
+                console.log("Doc bana?")
                 if(req.res === undefined){
+                    console.log("here??")
                     reject("req.res is undefined. Set locals properly");
                     next("req.res is undefined. Set locals properly");
                 }else if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                    console.log("or here??")
                     res.json(createResponse(`${name} created with details:`, createdDoc));
                 }
+                console.log("you should be here??")
 
                 resolve(createdDoc);
                 return createdDoc;
             })
             .catch((err) => {
+                console.log("Nahi bana?")
+                console.log(err)
                 reject(err);
                 next(err);
             });

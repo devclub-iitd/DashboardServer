@@ -8,20 +8,20 @@ const eventSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
+    // required: true,
     trim: true
   },
   start_date: {
     type: Date,
-    required: true
+    // required: true
   },
   end_date: {
     type: Date,
-    required: true
+    // required: true
   },
   embed_code: {
     type: String,
-    required: true
+    // required: true
   },
   display_on_website: {
     type: Boolean,
@@ -34,7 +34,7 @@ const eventSchema = new mongoose.Schema({
   },
   assignee: {
     type: String,
-    required: true,
+    // required: true,
     trim: true
   },
   created_by: {

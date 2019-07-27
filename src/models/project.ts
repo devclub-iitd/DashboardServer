@@ -8,7 +8,7 @@ const projectSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
+    // required: true,
     trim: true
   },
   members: {
@@ -23,31 +23,31 @@ const projectSchema = new mongoose.Schema({
     default: "IDEA",
     uppercase: true,
     trim: true,
-    enum:  ["IDEA","DOING","DEPLOYED"]
+    enum:  ["IDEA","ONGOING","DEPLOYED"]
   },
   start_date: {
     type: Date,
-    required: true
+    // required: true
   },
   end_date: {
     type: Date,
-    required: true
+    // required: true
   },
   origin: {
     type: String,
-    required: true
+    // required: true
   },
   origin_contact: {
     type: String,
-    required: true
+    // required: true
   },
   perks: {
     type: String,
-    required: true
+    // required: true
   },
   requirements: {
     type: String,
-    required: true
+    // required: true
   },
   display_on_website: {
     type: Boolean,
@@ -64,6 +64,12 @@ const projectSchema = new mongoose.Schema({
     required: true,
     default: false
   },  
+  labels: {
+    type: [{
+      type: String,
+      lowercase: true
+    }]
+  },
   url: {
     type: Map,
     of: String
