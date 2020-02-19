@@ -214,7 +214,7 @@ def create_projects_json():
 
 
 def create_resources_json():
-    values = get_sub_sheet('resources!A1:I')
+    values = get_sub_sheet('resources!A1:J')
     access_dict = create_key_dict(values[0])
 
     all_data = []
@@ -236,6 +236,9 @@ def create_resources_json():
 
         # archive field (bool)
         new_data['archive'] = (row[access_dict['archive']] == 'Y')
+        
+        # display_on_website field (bool)
+        new_data['display_on_website'] = (row[access_dict['Display On Website']] == 'Y')
 
         # description field
         new_data['description'] = row[access_dict['description']]
