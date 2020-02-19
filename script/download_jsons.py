@@ -77,7 +77,7 @@ def create_key_dict(row):
 
 
 def create_members_json():
-    values = get_sub_sheet('members!A1:T')
+    values = get_sub_sheet('members!A1:R')
     access_dict = create_key_dict(values[0])
 
     all_member_data = []
@@ -150,7 +150,7 @@ def create_members_json():
 
 
 def create_projects_json():
-    values = get_sub_sheet('projects!A1:T')
+    values = get_sub_sheet('projects!A1:M')
     access_dict = create_key_dict(values[0])
 
     all_data = []
@@ -193,7 +193,7 @@ def create_projects_json():
             row[access_dict['DisplayOnWebsite (Y/N)']] == 'Y')
 
         # labels field (array)
-        new_data['labels'] = []
+        new_data['labels'] = row[access_dict['labels']].split(',')
 
         # url field
         new_data['url'] = {}
@@ -201,11 +201,11 @@ def create_projects_json():
         # photo_url subfield
         new_data['url']['photo_url'] = row[access_dict['Image URL']]
 
-        # repository_url subfield
-        new_data['url']['repository_url'] = row[access_dict['Repository URL']]
+        # # repository_url subfield
+        # new_data['url']['repository_url'] = row[access_dict['Repository URL']]
 
-        # project_url subfield
-        new_data['url']['project_url'] = row[access_dict['Project URL']]
+        # # project_url subfield
+        # new_data['url']['project_url'] = row[access_dict['Project URL']]
 
         all_data.append(new_data)
 
@@ -259,7 +259,7 @@ def create_resources_json():
 
 
 def create_events_json():
-    values = get_sub_sheet('events!A1:G')
+    values = get_sub_sheet('events!A1:F')
     access_dict = create_key_dict(values[0])
 
     all_data = []
