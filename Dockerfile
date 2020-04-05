@@ -6,7 +6,7 @@ COPY package*.json ./
 
 RUN apt-get update
 RUN apt-get install netcat -y
-RUN apt-get install vim
+RUN apt-get install -y vim
 
 RUN npm install
 COPY . .
