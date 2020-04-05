@@ -5,6 +5,7 @@ import initCRUD from "../utils/crudFactory";
 
 // import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET } from "../utils/secrets";
 import { JWT_SECRET } from "../utils/secrets";
+import { ADMIN_SECRET } from "../utils/secrets";
 // import logger from "../utils/logger";
 import jwt, { Secret } from "jsonwebtoken";
 import { createResponse, createError } from "../utils/helper";
@@ -14,7 +15,7 @@ const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
 
 const router = express.Router({mergeParams: true});
-const [create, , update, all, all_query] = initCRUD(User);
+const [create, , update, all, all_query, all_delete] = initCRUD(User);
 
 const register = (req: Request, res: Response, next: NextFunction) => {
     req.body.privelege_level = "Unapproved_User";
@@ -271,6 +272,34 @@ const update_record = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
+const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
+    bcrypt.compare(ADMIN_SECRET, req.body.password, function(err: any, _: any) {
+        if (err) {
+            console.log(err)
+            res.json(createResponse("You are not authorised to perform this action. Your details have been reported", ""));
+        };
+        next();
+    });
+};
+
+const delete_record = (req: Request, res: Response, next: NextFunction) => {
+    if (req.res == undefined) {
+        req.res = res;
+    }
+    if (req.res.locals == undefined) {
+        req.res.locals = {};
+    }
+    req.res.locals.no_send = true;
+    all_delete(req, res, next)
+    .then((_: any) => {
+        res.json(createResponse("Records deleted", ""));
+    })
+    .catch((err: any) => {
+        res.json(createResponse("Error while deleting", err));
+    });
+};
+
+router.post('/deleteAll/', chk_pswd, delete_record);
 router.post('/', create);
 router.put('/:id', update_record);
 router.post("/login", login);

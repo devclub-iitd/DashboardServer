@@ -154,7 +154,31 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
         });
     };
 
-  return [create, get, update, all, all_query];
+  /**
+     * POST /
+     * Deletes all documents by query
+     */
+
+    const all_delete = (req: Request, res: Response, next: NextFunction) => {
+        return new Promise <any> ((resolve, reject) => {
+            model.remove({})
+            .then((docs: any) => {
+                if(req.res === undefined){
+                    reject("req.res is undefined. Set locals properly");
+                    next("req.res is undefined. Set locals properly");
+                }else if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                    res.json(createResponse(`data found with details:`, docs));
+                }
+                resolve(docs);
+            })
+            .catch((err) => {
+                reject(err);
+                next(err);
+            });
+        });
+    };
+
+  return [create, get, update, all, all_query, all_delete];
 };
 
 export default initCRUD;

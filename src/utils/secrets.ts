@@ -18,6 +18,7 @@ export const GITHUB_CLIENT_ID: string = process.env["GITHUB_CLIENT_ID"] || ''
 export const GITHUB_CLIENT_SECRET: string = process.env["GITHUB_CLIENT_SECRET"] || ''
 
 export const JWT_SECRET: string = process.env["JWT_SECRET"] || ''
+export const ADMIN_SECRET: string = process.env["ADMIN_SECRET"] || ''
 
 
 if(GITHUB_CLIENT_ID == '' || GITHUB_CLIENT_SECRET == '' || JWT_SECRET == ''){

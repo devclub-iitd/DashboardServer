@@ -3,7 +3,7 @@ import Item from "../models/item";
 import initCRUD from "../utils/crudFactory";
 
 const router = express.Router({mergeParams: true});
-const [create, get, update, all] = initCRUD(Item);
+const [create, get, update, all, all_delete] = initCRUD(Item);
 
 router.post('/', create);
 router.get('/getAll/', all);
