@@ -162,14 +162,14 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
     const all_delete = (req: Request, res: Response, next: NextFunction) => {
         return new Promise <any> ((resolve, reject) => {
             model.remove({})
-            .then((docs: any) => {
+            .then((_: any) => {
                 if(req.res === undefined){
                     reject("req.res is undefined. Set locals properly");
                     next("req.res is undefined. Set locals properly");
                 }else if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
-                    res.json(createResponse(`data found with details:`, docs));
+                    res.json(createResponse(`data removed:`, ''));
                 }
-                resolve(docs);
+                resolve();
             })
             .catch((err) => {
                 reject(err);
