@@ -70,3 +70,5 @@ dist/
 mongo/
 data/
 .gitsecret/keys/random_seed
+script/credentials.json
+script/token.pickle
