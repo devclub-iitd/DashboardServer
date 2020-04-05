@@ -10,5 +10,6 @@ RUN apt-get install netcat -y
 RUN npm install
 COPY . .
 
+RUN ["chmod", "+x", "/code/entry-point.sh"]
 ENTRYPOINT ["/code/entry-point.sh"] 
 
