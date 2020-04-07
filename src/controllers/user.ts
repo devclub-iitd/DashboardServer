@@ -20,13 +20,7 @@ const [create, , update, all, all_query, all_delete] = initCRUD(User);
 const register = (req: Request, res: Response, next: NextFunction) => {
     req.body.privelege_level = "Unapproved_User";
     req.body.display_on_website = false;
-    if (req.res == undefined) {
-        req.res = res;
-    }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
+    res.locals.no_send = true;
     create(req, res, next)
     .then((_: any) => {
         res.json(createResponse("Request sent to the Administrator", _));
@@ -39,13 +33,7 @@ const register = (req: Request, res: Response, next: NextFunction) => {
 const getUnapproved = (req: Request, res: Response, next: NextFunction) => {
     const my_query = {privelege_level: "Unapproved_User"};
     req.body.query = my_query;
-    if (req.res == undefined) {
-        req.res = res;
-    }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
+    res.locals.no_send = true;
     all_query(req, res, next)
     .then((data: any) => {
         return res.json(createResponse("Results", data));
@@ -218,13 +206,7 @@ const pswd_hash = (req: Request, _: Response, next: NextFunction) => {
 const approve_user = (req: Request, res: Response, next: NextFunction) => {
     const my_query = {entry_no: req.body.entry_no};
     req.body.query = my_query;
-    if (req.res == undefined) {
-        req.res = res;
-    }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
+    res.locals.no_send = true;
     all_query(req, res, next)
     .then((data: any) => {
         req.body = {};
@@ -248,13 +230,7 @@ const update_record = (req: Request, res: Response, next: NextFunction) => {
     console.log(my_query);
 
     req.body.query = my_query;
-    if (req.res == undefined) {
-        req.res = res;
-    }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
+    res.locals.no_send = true;
     all_query(req, res, next)
     .then((data: any) => {
         req.body.query = {};
@@ -283,13 +259,7 @@ const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
-    if (req.res == undefined) {
-        req.res = res;
-    }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
+    res.locals.no_send = true;
     all_delete(req, res, next)
     .then((_: any) => {
         res.json(createResponse("Records deleted", ""));

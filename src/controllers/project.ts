@@ -14,13 +14,7 @@ const update_record = (req: Request, res: Response, next: NextFunction) => {
     console.log(my_query);
 
     req.body.query = my_query;
-    if (req.res == undefined) {
-        req.res = res;
-    }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
+    res.locals.no_send = true;
     all_query(req, res, next)
     .then((data: any) => {
         req.body.query = {};
@@ -49,13 +43,7 @@ const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
-    if (req.res == undefined) {
-        req.res = res;
-    }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
+    res.locals.no_send = true;
     all_delete(req, res, next)
     .then((_: any) => {
         res.json(createResponse("Records deleted", ""));
