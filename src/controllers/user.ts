@@ -270,6 +270,36 @@ const approve_user = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
+// User should be authenticated before this
+// WARNING: Deletes the user.
+// Should a check be added to see if the user is not approved?
+const reject_user = (req: Request, res: Response, next: NextFunction) => {
+    if (res.locals.logged_user_id == undefined) {
+        return next(createError(500, "User not authenticated", "User id not found"));
+    }
+
+    if (req.body.user_id == undefined) {
+        return next(createError(400, "User id not supplied", ""));
+    }
+
+    User.findByIdAndDelete(req.body.user_id)
+        .then(_ => res.send("User rejected successfully"))
+        .catch(err => next(err));
+}
+
+const reject_all = (_: Request, res: Response, next: NextFunction) => {
+    if (res.locals.logged_user_id == undefined) {
+        return next(createError(500, "User not authenticated", "User id not found"));
+    }
+
+    User.deleteMany({privelege_level: "Unapproved_User"})
+        .then(d => {
+            console.log(d);
+            res.send("All unapproved users rejected successfully")
+        })
+        .catch(err => next(err));
+}
+
 const update_record = (req: Request, res: Response, next: NextFunction) => {
     const my_query = {entry_no: req.params.id};
     console.log(my_query);
@@ -343,6 +373,8 @@ router.put('/:id', checkAdmin, isSameUserOrAdmin, update_record);
 router.post("/login", login);
 router.post("/changePassword", checkToken, changePassword);
 router.post("/approve", isAdmin, approve_user);
+router.post("/reject", isAdmin, reject_user);
+router.post("/rejectAll", isAdmin, reject_all);
 router.get("/getAll/", all);
 router.get("/query/", all_query);
 router.post("/register", pswd_hash, register);
