@@ -5,13 +5,14 @@ import initCRUD from "../utils/crudFactory";
 
 // import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET } from "../utils/secrets";
 import { JWT_SECRET } from "../utils/secrets";
-import { ADMIN_SECRET } from "../utils/secrets";
+//import { ADMIN_SECRET } from "../utils/secrets";
 // import logger from "../utils/logger";
 import jwt, { Secret } from "jsonwebtoken";
 import { createResponse, createError } from "../utils/helper";
 import { Request, Response, NextFunction } from "express";
 // import { checkToken, isSameUser } from "../middlewares/auth";
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
+import { isAdmin, checkAdmin, checkToken } from "../middlewares/auth";
 const SALT_WORK_FACTOR = 10;
 
 const router = express.Router({mergeParams: true});
@@ -58,25 +59,28 @@ const login = (req: Request, res: Response, next: NextFunction) => {
         } else {
             const userObject = userDoc.toObject();
 
-            // Get the password
-            const userPassword = userObject.password;
+            // Get the hashed password
+            const passwordHash = userObject.password;
 
             if (userObject.privelege_level == "Unapproved_User") {
                 next(createError(500, "You are not yet approved", ``));
             }
 
-            console.log(userPassword);
-            console.log(my_password);
-            bcrypt.compare(my_password, userPassword, function(err: any, _: any) {
-                if (err) {
-                    next(createError(400, "Incorrect login", `User with username ${my_entryNumber} does not exist or incorrect password entered`));
+            // Just.. No.
+            //console.log(userPassword);
+            //console.log(my_password);
+
+            bcrypt.compare(my_password, passwordHash, function(err, passMatch) {
+                if (err || !passMatch) {
+                    return next(createError(400, "Incorrect login", `User with username ${my_entryNumber} does not exist or incorrect password entered`));
                 }
-                const payload = {user: userObject.entry_no};
+                
+                const payload = {_id: userObject._id};
                 const options = {expiresIn: "2d", issuer: "devclub-dashboard"};
                 const secret = JWT_SECRET as Secret;
 
                 if (secret === undefined) {
-                    next(createError(500, "Incorrect configuration", `Token secret key not initialized`));
+                    return next(createError(500, "Incorrect configuration", `Token secret key not initialized`));
                 }
 
                 const token = jwt.sign(payload, secret, options);
@@ -88,7 +92,6 @@ const login = (req: Request, res: Response, next: NextFunction) => {
                 };
 
                 res.status(200).send(result);
-                return result;
             });
         }
     })
@@ -96,6 +99,42 @@ const login = (req: Request, res: Response, next: NextFunction) => {
         next(err);
     });
 };
+
+
+const hashPassword = (password: string) => {
+    return new Promise <string> ((resolve, reject) => {
+        bcrypt.genSalt(SALT_WORK_FACTOR, (err: any, salt: any) => {
+            if (err) return reject(err);
+            bcrypt.hash(password, salt, (err, hash) => {
+                if (err) return reject(err);
+                resolve(hash);
+            })
+        })
+    });
+}
+
+// Authenticate user before this
+const changePassword = (req: Request, res: Response, next: NextFunction) => {
+    if (res.locals.logged_user_id == undefined) {
+        return next(createError(500, "Internal Error", "User not authenticated"));
+    }
+
+    if (req.body.newPassword == undefined) {
+        return next(createError(400, "New password not given", "Expected newPassword in body of request"));
+    }
+
+    hashPassword(req.body.newPassword)
+        .then(passwordHash => {
+            res.locals.no_send = true;
+            req.params.id = res.locals.logged_user_id;
+            req.body = {password: passwordHash};
+            console.log(passwordHash);
+            update(req, res, next)
+                .then(_ => res.json(createResponse("Password updated", "")))
+                .catch(err => next(err));
+        })
+        .catch(err => next(err));
+}
 
 // const login = (req: Request, res: Response, next: NextFunction) => {
 
@@ -192,7 +231,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
 // };
 
 const pswd_hash = (req: Request, _: Response, next: NextFunction) => {
-    bcrypt.genSalt(SALT_WORK_FACTOR, function (err: any, salt: any) {
+    /* bcrypt.genSalt(SALT_WORK_FACTOR, function (err: any, salt: any) {
         if (err) console.log(err);
         // hash the password using our new salt
         bcrypt.hash(req.body.password, salt, function (err: any, hash: any) {
@@ -200,7 +239,13 @@ const pswd_hash = (req: Request, _: Response, next: NextFunction) => {
             req.body.password = hash;
             next();
         });
-    });
+    }); */
+    hashPassword(req.body.password)
+        .then(passwordHash => {
+            req.body.password = passwordHash;
+            next();
+        })
+        .catch(err => console.log(err));
 };
 
 const approve_user = (req: Request, res: Response, next: NextFunction) => {
@@ -248,7 +293,7 @@ const update_record = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
+/* const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
     bcrypt.compare(ADMIN_SECRET, req.body.password, function(err: any, _: any) {
         if (err) {
             console.log(err)
@@ -256,7 +301,7 @@ const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
         };
         next();
     });
-};
+}; */
 
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
     res.locals.no_send = true;
@@ -269,11 +314,35 @@ const delete_record = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-router.post('/deleteAll/', chk_pswd, delete_record);
+/*
+* Must be called after a call to checkAdmin. Relies on property res.locals.checkAdmin
+* to be present for admin access.
+*/
+const isSameUserOrAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if (res.locals.isAdmin === undefined) {
+        return next(createError(500, "Internal error", "res.locals.isAdmin property not set"));
+    }
+
+    if (res.locals.isAdmin) return next();
+    else if(res.locals.logged_user == req.params.id) return next()
+    else{
+      next(createError(401,'Unauthorized','User is unauthorized for this endpoint.'))
+    }
+};
+
+router.post('/testAdmin/', isAdmin, (_0: Request, res: Response, _2: NextFunction) => {
+    res.send("You are a admin, Harry");}
+);
+router.post('/testAdminSelf/:id', checkAdmin, isSameUserOrAdmin, (_0: Request, res: Response, _2: NextFunction) => {
+    res.send("You were looking for yourself, Harry. Or you are an admin idk");}
+);
+
+router.post('/deleteAll/', isAdmin, delete_record);
 router.post('/', create);
-router.put('/:id', update_record);
+router.put('/:id', checkAdmin, isSameUserOrAdmin, update_record);
 router.post("/login", login);
-router.post("/approve", approve_user); 		// Add a middleware to checkAdmin
+router.post("/changePassword", checkToken, changePassword);
+router.post("/approve", isAdmin, approve_user);
 router.get("/getAll/", all);
 router.get("/query/", all_query);
 router.post("/register", pswd_hash, register);
