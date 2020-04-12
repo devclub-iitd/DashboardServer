@@ -17,14 +17,15 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
       if (err) {
         next(createError(401, "Unauthorized", "User is unauthorized. Token is invalid"));
       } else {
-        console.log(userDecoded);
         const id = userDecoded["_id"];
         res.locals.logged_user_id = id;
         User.findById(id, "entry_no")
           .then(doc => {
-            console.log(doc);
+            if (doc == null) {
+              next(createError(401, "Unauthorized", "User is not valid"));
+            }
             res.locals.logged_user = doc?.get("entry_no");
-            console.log(res.locals.logged_user);
+            console.log("Verified token: " + res.locals.logged_user);
             next();
           })
           .catch(err => {
@@ -58,8 +59,6 @@ const isUser = (query: any, prop?: string) => {
 
     User.find(query)
       .then(docs => {
-        console.log(docs);
-        console.log(res.locals.logged_user_id);
         for (const doc of docs) {
           if (doc._id == res.locals.logged_user_id) {
             if (prop != undefined) res.locals[prop] = true;

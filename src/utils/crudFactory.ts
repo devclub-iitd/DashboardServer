@@ -143,7 +143,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
 
   /**
      * POST /
-     * Deletes all documents by query
+     * Deletes all documents
      */
 
     const all_delete = (_: Request, res: Response, next: NextFunction) => {
@@ -162,7 +162,36 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
         });
     };
 
-  return [create, get, update, all, all_query, all_delete];
+    /**
+     * POST /
+     * Deletes all documents by the query supplied
+     */
+    const delete_query = (req: Request, res: Response, next: NextFunction) => {
+        return new Promise <void> ((resolve, reject) => {
+            if (req.query == undefined) {
+                reject();
+
+                if (res.locals.no_send == undefined || res.locals.no_send == false) {
+                    next(createError(400, "Query not provided to delete", ""));
+                }
+                return;
+            }
+
+            model.deleteMany(req.body.query)
+            .then(_ => {
+                if (res.locals.no_send == undefined || res.locals.no_send == false) {
+                    res.json(createResponse("Data removed", ""));
+                }
+                resolve();
+            })
+            .catch(err => {
+                reject(err);
+                next(err);
+            })
+        });
+    }
+
+  return [create, get, update, all, all_query, all_delete, delete_query];
 };
 
 export default initCRUD;

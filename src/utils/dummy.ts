@@ -273,6 +273,7 @@ const createDummyData = () => {
         });
     })
     .catch((err) => {
+      console.log(err);
       return err;
     });
 };

@@ -16,7 +16,7 @@ import { isAdmin, checkAdmin, checkToken } from "../middlewares/auth";
 const SALT_WORK_FACTOR = 10;
 
 const router = express.Router({mergeParams: true});
-const [create, , update, all, all_query, all_delete] = initCRUD(User);
+const [create, , update, all, all_query, all_delete, delete_query] = initCRUD(User);
 
 const register = (req: Request, res: Response, next: NextFunction) => {
     req.body.privelege_level = "Unapproved_User";
@@ -127,7 +127,11 @@ const changePassword = (req: Request, res: Response, next: NextFunction) => {
         .then(passwordHash => {
             res.locals.no_send = true;
             req.params.id = res.locals.logged_user_id;
-            req.body = {password: passwordHash};
+            req.body = {
+                password: passwordHash,
+                updated_by: res.locals.logged_user_id
+            };
+            
             console.log(passwordHash);
             update(req, res, next)
                 .then(_ => res.json(createResponse("Password updated", "")))
@@ -256,6 +260,8 @@ const approve_user = (req: Request, res: Response, next: NextFunction) => {
     .then((data: any) => {
         req.body = {};
         req.body.privelege_level = "Approved_User";
+        req.body.created_by = res.locals.logged_user_id;
+        req.body.updated_by = res.locals.logged_user_id;
         req.params.id = data[0]["_id"];
         update(req, res, next)
         .then((fresh_data: any) => {
@@ -287,16 +293,15 @@ const reject_user = (req: Request, res: Response, next: NextFunction) => {
         .catch(err => next(err));
 }
 
-const reject_all = (_: Request, res: Response, next: NextFunction) => {
+const reject_all = (req: Request, res: Response, next: NextFunction) => {
     if (res.locals.logged_user_id == undefined) {
         return next(createError(500, "User not authenticated", "User id not found"));
     }
 
-    User.deleteMany({privelege_level: "Unapproved_User"})
-        .then(d => {
-            console.log(d);
-            res.send("All unapproved users rejected successfully")
-        })
+    req.body.query = {privelege_level: "Unapproved_User"};
+    res.locals.no_send = true;
+    delete_query(req, res, next)
+        .then(() => res.send("All unapproved users rejected successfully"))
         .catch(err => next(err));
 }
 
@@ -309,6 +314,7 @@ const update_record = (req: Request, res: Response, next: NextFunction) => {
     all_query(req, res, next)
     .then((data: any) => {
         req.body.query = {};
+        req.body.updated_by = res.locals.logged_user_id;
         req.params.id = data[0]["_id"];
         update(req, res, next)
         .then((fresh_data: any) => {
