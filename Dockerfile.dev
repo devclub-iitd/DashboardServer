@@ -1,0 +1,15 @@
+FROM node:10.6.0
+
+RUN apt-get update
+RUN apt-get install -y netcat
+RUN apt-get install -y vim
+
+WORKDIR /code
+COPY package*.json ./
+RUN npm install --production=false
+
+COPY entry-point.sh.dev ./
+
+RUN ["chmod", "+x", "/code/entry-point.sh.dev"]
+ENTRYPOINT ["/code/entry-point.sh.dev"] 
+
