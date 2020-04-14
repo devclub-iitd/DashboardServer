@@ -388,6 +388,7 @@ router.post("/approve", isAdmin, approve_user);
 router.post("/reject", isAdmin, reject_user);
 router.post("/rejectAll", isAdmin, reject_all);
 router.get("/getAll/", all_website);
+router.get("/getAllDB", checkToken, all);
 router.get("/query/", all_query);
 router.post("/register", pswd_hash, register);
 router.get("/unapproved", getUnapproved);
