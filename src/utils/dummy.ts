@@ -28,7 +28,7 @@ const users = [
     name: "Suyash Agrawal",
     entry_no: "2015Cs10262",
     hostel: "Kumaon",
-    password: "1234",
+    password: "$2b$10$bpbBQNdpLJD3483MX7YJSuTNHlVn4522ABlpb0x0nPWnZi.7U1DA6", // hash for 1234
     gender: "male",
     join_year: new Date(),
     grad_year: new Date(),
@@ -49,7 +49,7 @@ const users = [
   {
     email: "aman71197@gmail.com",
     name: "Aman Agrawal",
-    password: "1234",
+    password: "$2b$10$bpbBQNdpLJD3483MX7YJSuTNHlVn4522ABlpb0x0nPWnZi.7U1DA6", //hash for 1234
     entry_no: "2015Cs10210",
     hostel: "Kumaon",
     gender: "male",
@@ -72,7 +72,7 @@ const users = [
   {
     email: "lol@gmail.com",
     name: "LOLO",
-    password: "1234",
+    password: "$2b$10$bpbBQNdpLJD3483MX7YJSuTNHlVn4522ABlpb0x0nPWnZi.7U1DA6", // hash for 1234
     entry_no: "2015Cs10292",
     hostel: "Aravali",
     gender: "female",
@@ -273,6 +273,7 @@ const createDummyData = () => {
         });
     })
     .catch((err) => {
+      console.log(err);
       return err;
     });
 };
