@@ -73,6 +73,9 @@ apiRouter.get('/dummy', function(_, res) {
 
 
 app.use('/api', apiRouter);
+app.use('/healthz', (_0: Request, res: Response, _1: NextFunction) => {
+  res.send("Ok, Healthy!");
+});
 
 app.use(function(err: Error, _0: Request, res: Response, _1: NextFunction) {
   res.status(500);
