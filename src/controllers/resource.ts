@@ -7,7 +7,7 @@ import { Request, Response, NextFunction } from "express";
 import { checkToken, isAdmin } from "../middlewares/auth";
 
 const router = express.Router({mergeParams: true});
-const [create, get, update, , all_query, all_delete, delete_query] = initCRUD(Resources);
+const [create, get, update, all, all_query, all_delete, delete_query] = initCRUD(Resources);
 //const bcrypt = require("bcrypt");
 
 /*const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
@@ -56,6 +56,7 @@ router.post('/deleteAll/', isAdmin, delete_record);
 router.post("/delete/", isAdmin, delete_resource);
 router.post("/", create);
 router.get("/getAll/", all_website);
+router.get("/getAllDB", checkToken, all);
 router.get("/:id", get);
 router.put("/:id", checkToken, update_record);
 
