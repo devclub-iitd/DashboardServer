@@ -7,7 +7,7 @@ import { Request, Response, NextFunction } from "express";
 import { checkToken, isAdmin } from "../middlewares/auth";
 
 const router = express.Router({mergeParams: true});
-const [create, get, update, all, all_delete, delete_query] = initCRUD(Event);
+const [create, get, update, , all_query, all_delete, delete_query] = initCRUD(Event);
 //const bcrypt = require("bcrypt");
 
 /* const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
@@ -46,10 +46,16 @@ const update_record = (req: Request, res: Response, next: NextFunction) => {
     update(req, res, next);
 }
 
+// Get all docs with display_on_website true
+const all_website = (req: Request, res: Response, next: NextFunction) => {
+    req.body.query = {display_on_website: true};
+    all_query(req, res, next);
+}
+
 router.post('/deleteAll/', isAdmin, delete_record);
 router.post('/delete/', isAdmin, delete_event)
 router.post('/', create);
-router.get('/getAll/', all);
+router.get('/getAll/', all_website);
 router.get('/:id', get);
 router.put('/:id', checkToken, update_record);
 

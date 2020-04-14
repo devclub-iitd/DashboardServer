@@ -129,7 +129,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
                 }
                 
                 if (res.locals.no_send == undefined || res.locals.no_send == false) {
-                    res.json(createResponse(`data found with details:`, docs));
+                    res.json(createResponse(`${name} found with details:`, docs));
                 }
                 resolve(docs);
                 return docs;

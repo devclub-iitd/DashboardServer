@@ -6,7 +6,7 @@ import { createResponse, createError } from "../utils/helper";
 import { checkToken, isAdmin } from "../middlewares/auth";
 
 const router = express.Router({mergeParams: true});
-const [create, get, update, all, all_delete, delete_query] = initCRUD(Item);
+const [create, get, update, , all_query, all_delete, delete_query] = initCRUD(Item);
 
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
     res.locals.no_send = true;
@@ -34,8 +34,14 @@ const update_record = (req: Request, res: Response, next: NextFunction) => {
     update(req, res, next);
 }
 
+// Get all docs with display_on_website true
+const all_website = (req: Request, res: Response, next: NextFunction) => {
+    req.body.query = {display_on_website: true};
+    all_query(req, res, next);
+}
+
 router.post('/', create);
-router.get('/getAll/', all);
+router.get('/getAll/', all_website);
 router.get('/:id', get);
 router.put('/:id', checkToken, update_record); // Only a valid user can update
 router.post('/deleteAll/', isAdmin, delete_record);

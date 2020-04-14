@@ -350,6 +350,12 @@ const delete_record = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
+// Get all docs with display_on_website true
+const all_website = (req: Request, res: Response, next: NextFunction) => {
+    req.body.query = {display_on_website: true};
+    all_query(req, res, next);
+}
+
 /*
 * Must be called after a call to checkAdmin. Relies on property res.locals.checkAdmin
 * to be present for admin access.
@@ -381,7 +387,7 @@ router.post("/changePassword", checkToken, changePassword);
 router.post("/approve", isAdmin, approve_user);
 router.post("/reject", isAdmin, reject_user);
 router.post("/rejectAll", isAdmin, reject_all);
-router.get("/getAll/", all);
+router.get("/getAll/", all_website);
 router.get("/query/", all_query);
 router.post("/register", pswd_hash, register);
 router.get("/unapproved", getUnapproved);

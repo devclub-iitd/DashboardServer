@@ -5,7 +5,7 @@ import initCRUD from "../utils/crudFactory";
 import { checkToken, isAdmin } from "../middlewares/auth"
 
 const router = express.Router({mergeParams: true});
-const [create, get, update, all, all_query, all_delete, delete_query] = initCRUD(Project);
+const [create, get, update, , all_query, all_delete, delete_query] = initCRUD(Project);
 import { createResponse, createError } from "../utils/helper";
 import { Request, Response, NextFunction } from "express";
 //const bcrypt = require("bcrypt");
@@ -70,10 +70,16 @@ const delete_project = (req: Request, res: Response, next: NextFunction) => {
     delete_query(req, res, next);
 }
 
+// Get all docs with display_on_website true
+const all_website = (req: Request, res: Response, next: NextFunction) => {
+    req.body.query = {display_on_website: true};
+    all_query(req, res, next);
+}
+
 router.post('/deleteAll/', isAdmin, delete_record);
 router.post('/delete', isAdmin, delete_project);
 router.post('/', checkToken, create_record);
-router.get('/getAll/', all);
+router.get('/getAll/', all_website);
 router.get('/:id', get);
 router.put('/:id', checkToken, update_record);
 
