@@ -55,7 +55,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
     // Retrieve the username from the database
     User.findOne({entry_no: my_entryNumber}).then((userDoc) => {
         if (!userDoc) {
-            next(createError(404, "Not found", `User with entryNumber ${my_entryNumber} does not exist`));
+            return next(createError(404, "Not found", `User with entryNumber ${my_entryNumber} does not exist`));
         } else {
             const userObject = userDoc.toObject();
 
@@ -63,7 +63,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
             const passwordHash = userObject.password;
 
             if (userObject.privelege_level == "Unapproved_User") {
-                next(createError(500, "You are not yet approved", ``));
+                return next(createError(500, "You are not yet approved", ``));
             }
 
             // Just.. No.
@@ -88,7 +88,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
                 const result = {
                     token: token,
                     status: 200,
-                    result: userObject
+                    result: userDoc
                 };
 
                 res.status(200).send(result);
@@ -96,7 +96,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
         }
     })
     .catch((err) => {
-        next(err);
+        return next(err);
     });
 };
 
@@ -252,47 +252,6 @@ const pswd_hash = (req: Request, _: Response, next: NextFunction) => {
         .catch(err => console.log(err));
 };
 
-const approve_user = (req: Request, res: Response, next: NextFunction) => {
-    const my_query = {entry_no: req.body.entry_no};
-    req.body.query = my_query;
-    res.locals.no_send = true;
-    all_query(req, res, next)
-    .then((data: any) => {
-        req.body = {};
-        req.body.privelege_level = "Approved_User";
-        req.body.created_by = res.locals.logged_user_id;
-        req.body.updated_by = res.locals.logged_user_id;
-        req.params.id = data[0]["_id"];
-        update(req, res, next)
-        .then((fresh_data: any) => {
-            res.json(createResponse("Approved User", fresh_data));
-        })
-        .catch((err: any) => {
-            res.json(createResponse("Error while registering", err));
-        });
-    })
-    .catch((err: any) => {
-        res.json(createResponse("Error while registering", err));
-    });
-};
-
-// User should be authenticated before this
-// WARNING: Deletes the user.
-// Should a check be added to see if the user is not approved?
-const reject_user = (req: Request, res: Response, next: NextFunction) => {
-    if (res.locals.logged_user_id == undefined) {
-        return next(createError(500, "User not authenticated", "User id not found"));
-    }
-
-    if (req.body.user_id == undefined) {
-        return next(createError(400, "User id not supplied", ""));
-    }
-
-    User.findByIdAndDelete(req.body.user_id)
-        .then(_ => res.send("User rejected successfully"))
-        .catch(err => next(err));
-}
-
 const reject_all = (req: Request, res: Response, next: NextFunction) => {
     if (res.locals.logged_user_id == undefined) {
         return next(createError(500, "User not authenticated", "User id not found"));
@@ -306,27 +265,11 @@ const reject_all = (req: Request, res: Response, next: NextFunction) => {
 }
 
 const update_record = (req: Request, res: Response, next: NextFunction) => {
-    const my_query = {entry_no: req.params.id};
-    console.log(my_query);
-
-    req.body.query = my_query;
-    res.locals.no_send = true;
-    all_query(req, res, next)
-    .then((data: any) => {
-        req.body.query = {};
-        req.body.updated_by = res.locals.logged_user_id;
-        req.params.id = data[0]["_id"];
-        update(req, res, next)
-        .then((fresh_data: any) => {
-            res.json(createResponse("Record updated", fresh_data));
-        })
-        .catch((err: any) => {
-            res.json(createResponse("Error while registering", err));
-        });
-    })
-    .catch((err: any) => {
-        res.json(createResponse("Error while registering", err));
-    });
+    req.body.updated_by = res.locals.logged_user_id;
+    if (!res.locals.isAdmin) {
+        req.body.privelege_level = undefined;
+    }
+    update(req, res, next);
 };
 
 /* const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
@@ -366,7 +309,7 @@ const isSameUserOrAdmin = (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (res.locals.isAdmin) return next();
-    else if(res.locals.logged_user == req.params.id) return next()
+    else if(res.locals.logged_user_id == req.params.id) return next()
     else{
       next(createError(401,'Unauthorized','User is unauthorized for this endpoint.'))
     }
@@ -384,12 +327,10 @@ router.post('/', create);
 router.put('/:id', checkAdmin, isSameUserOrAdmin, update_record);
 router.post("/login", login);
 router.post("/changePassword", checkToken, changePassword);
-router.post("/approve", isAdmin, approve_user);
-router.post("/reject", isAdmin, reject_user);
 router.post("/rejectAll", isAdmin, reject_all);
 router.get("/getAll/", all_website);
 router.get("/getAllDB", checkToken, all);
-router.get("/query/", all_query);
+router.post("/query/", all_query);
 router.post("/register", pswd_hash, register);
 router.get("/unapproved", getUnapproved);
 
