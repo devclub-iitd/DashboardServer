@@ -293,6 +293,16 @@ const delete_record = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
+// Takes in req.body.id as the id of the doc to be deleted
+const delete_user = (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.id == undefined) {
+        return next(createError(400, "User id missing", "Please specify id in body"))
+    }
+
+    req.body.query = {_id: req.body.id};
+    delete_query(req, res, next);
+}
+
 // Get all docs with display_on_website true
 const all_website = (req: Request, res: Response, next: NextFunction) => {
     req.body.query = {display_on_website: true};
@@ -323,6 +333,7 @@ router.post('/testAdminSelf/:id', checkAdmin, isSameUserOrAdmin, (_0: Request, r
 );
 
 router.post('/deleteAll/', isAdmin, delete_record);
+router.post('/delete', isAdmin, delete_user);
 router.post('/', create);
 router.put('/:id', checkAdmin, isSameUserOrAdmin, update_record);
 router.post("/login", login);
