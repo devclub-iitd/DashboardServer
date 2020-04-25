@@ -22,9 +22,12 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
         User.findById(id, "entry_no")
           .then(doc => {
             if (doc == null) {
-              next(createError(401, "Unauthorized", "User is not valid"));
+              return next(createError(401, "Unauthorized", "User is not valid"));
+            } else if (doc.get("privelege_level") == "Unapproved_User") {
+              return next(createError(400, "Unapproved user", ""));
+              //^ Should change it to 401 I think
             }
-            res.locals.logged_user = doc?.get("entry_no");
+            res.locals.logged_user = doc.get("entry_no");
             console.log("Verified token: " + res.locals.logged_user);
             next();
           })
