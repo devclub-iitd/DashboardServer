@@ -4,7 +4,7 @@ import initCRUD from "../utils/crudFactory";
 // import rp from "request-promise";
 
 // import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET } from "../utils/secrets";
-import { JWT_SECRET } from "../utils/secrets";
+import { JWT_SECRET, ADMIN_ENTRY } from "../utils/secrets";
 //import { ADMIN_SECRET } from "../utils/secrets";
 // import logger from "../utils/logger";
 import jwt, { Secret } from "jsonwebtoken";
@@ -12,8 +12,7 @@ import { createResponse, createError } from "../utils/helper";
 import { Request, Response, NextFunction } from "express";
 // import { checkToken, isSameUser } from "../middlewares/auth";
 import bcrypt from "bcrypt";
-import { isAdmin, checkAdmin, checkToken } from "../middlewares/auth";
-const SALT_WORK_FACTOR = 10;
+import { isAdmin, checkAdmin, checkToken, hashPassword } from "../middlewares/auth";
 
 const router = express.Router({mergeParams: true});
 const [create, , update, all, all_query, all_delete, delete_query] = initCRUD(User);
@@ -62,10 +61,6 @@ const login = (req: Request, res: Response, next: NextFunction) => {
             // Get the hashed password
             const passwordHash = userObject.password;
 
-            if (userObject.privelege_level == "Unapproved_User") {
-                return next(createError(500, "You are not yet approved", ``));
-            }
-
             // Just.. No.
             //console.log(userPassword);
             //console.log(my_password);
@@ -73,6 +68,8 @@ const login = (req: Request, res: Response, next: NextFunction) => {
             bcrypt.compare(my_password, passwordHash, function(err, passMatch) {
                 if (err || !passMatch) {
                     return next(createError(400, "Incorrect login", `User with username ${my_entryNumber} does not exist or incorrect password entered`));
+                } else if (userObject.privelege_level == "Unapproved_User") {
+                    return next(createError(400, "Unapproved user", "You are not approved"));
                 }
                 
                 const payload = {_id: userObject._id};
@@ -100,18 +97,6 @@ const login = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-
-const hashPassword = (password: string) => {
-    return new Promise <string> ((resolve, reject) => {
-        bcrypt.genSalt(SALT_WORK_FACTOR, (err: any, salt: any) => {
-            if (err) return reject(err);
-            bcrypt.hash(password, salt, (err, hash) => {
-                if (err) return reject(err);
-                resolve(hash);
-            })
-        })
-    });
-}
 
 // Authenticate user before this
 const changePassword = (req: Request, res: Response, next: NextFunction) => {
@@ -284,12 +269,13 @@ const update_record = (req: Request, res: Response, next: NextFunction) => {
 
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
     res.locals.no_send = true;
-    all_delete(req, res, next)
+    req.body.query = { entry_no: { $ne: ADMIN_ENTRY } };
+    delete_query(req, res, next)
     .then((_: any) => {
         res.json(createResponse("Records deleted", ""));
     })
     .catch((err: any) => {
-        res.json(createResponse("Error while deleting", err));
+        res.json(createError(500, "Error while deleting", err));
     });
 };
 
@@ -299,7 +285,7 @@ const delete_user = (req: Request, res: Response, next: NextFunction) => {
         return next(createError(400, "User id missing", "Please specify id in body"))
     }
 
-    req.body.query = {_id: req.body.id};
+    req.body.query = {_id: req.body.id, entry_no: { $ne: ADMIN_ENTRY } };
     delete_query(req, res, next);
 }
 

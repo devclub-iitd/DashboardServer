@@ -5,6 +5,20 @@ import { JWT_SECRET } from "../utils/secrets";
 import { createError } from "../utils/helper";
 import User from "../models/user";
 
+import bcrypt from "bcrypt";
+const SALT_WORK_FACTOR = 10;
+
+export const hashPassword = (password: string) => {
+  return new Promise <string> ((resolve, reject) => {
+      bcrypt.genSalt(SALT_WORK_FACTOR, (err: any, salt: any) => {
+          if (err) return reject(err);
+          bcrypt.hash(password, salt, (err, hash) => {
+              if (err) return reject(err);
+              resolve(hash);
+          })
+      })
+  });
+}
 
 export const checkToken = (req: Request, res: Response, next: NextFunction) => {
   let token = req.header("x-access-token") || req.header("authorization"); // Express headers are auto converted to lowercase
@@ -19,7 +33,7 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
       } else {
         const id = userDecoded["_id"];
         res.locals.logged_user_id = id;
-        User.findById(id, "entry_no")
+        User.findById(id)
           .then(doc => {
             if (doc == null) {
               return next(createError(401, "Unauthorized", "User is not valid"));

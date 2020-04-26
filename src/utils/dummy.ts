@@ -90,7 +90,7 @@ const users = [
       "github": "lol",
       "photo": "lol"
     },
-    privelege_level: "Admin"
+    privelege_level: "Approved_User"
   }
 ];
 

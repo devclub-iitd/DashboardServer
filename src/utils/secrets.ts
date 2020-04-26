@@ -35,3 +35,11 @@ if (!MONGODB_URI) {
   logger.error("No mongo connection string. Set MONGODB_URI environment variable.");
   process.exit(1);
 }
+
+export const ADMIN_ENTRY: string = process.env["ADMIN_ENTRY"] || '';
+export const ADMIN_PASS: string = process.env["ADMIN_PASS"] || '';
+
+if (ADMIN_ENTRY == '' || ADMIN_PASS == '') {
+  logger.error("Admin entry number or password missing. Set ADMIN_ENTRY and ADMIN_PASS environment variables");
+  process.exit(1);
+}

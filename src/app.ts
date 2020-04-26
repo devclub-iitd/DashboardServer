@@ -18,6 +18,8 @@ import eventRouter from "./controllers/event";
 import itemRouter from "./controllers/item";
 import resourceRouter from "./controllers/resource";
 
+import init from "./utils/init"
+
 
 // Create Express server
 const app = express();
@@ -85,5 +87,7 @@ app.use(function(err: Error, _0: Request, res: Response, _1: NextFunction) {
   res.send(e);
 });
 
+
+init();
 
 export default app;
