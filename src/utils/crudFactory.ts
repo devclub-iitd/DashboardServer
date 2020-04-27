@@ -18,11 +18,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
             model.create(req.body)
             .then((createdDoc) => {
                 console.log("Doc bana?")
-                if(req.res === undefined){
-                    console.log("here??")
-                    reject("req.res is undefined. Set locals properly");
-                    next("req.res is undefined. Set locals properly");
-                }else if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                if (res.locals.no_send == undefined || res.locals.no_send == false) {
                     console.log("or here??")
                     res.json(createResponse(`${name} created with details:`, createdDoc));
                 }
@@ -52,10 +48,8 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
                     next(createError(404,"Not found",`${name} does not exist with id ${req.params.id}`));
                     return doc;
                 }
-                if(req.res === undefined){
-                    reject("req.res is undefined. Set locals properly");
-                    next("req.res is undefined. Set locals properly");
-                }else if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                
+                if (res.locals.no_send == undefined || res.locals.no_send == false) {
                     res.json(createResponse(`${name} found with details:`, doc));
                 }
                 resolve(doc);
@@ -81,10 +75,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
                     next(createError(404,"Not found",`${name} does not exist with id ${req.params.docid}`));
                     return doc;
                 }
-                if(req.res === undefined){
-                    reject("req.res is undefined. Set locals properly");
-                    next("req.res is undefined. Set locals properly");
-                }else if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                if (res.locals.no_send == undefined || res.locals.no_send == false) {
                     res.json(createResponse(`${name} updated with new details as:`, doc));
                 }
                 resolve(doc);
@@ -101,7 +92,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * GET /
      * Gets all documents
      */
-    const all = (req: Request, res: Response, next: NextFunction) => {
+    const all = (_: Request, res: Response, next: NextFunction) => {
         return new Promise <any> ((resolve, reject) => {
             model.find({})
             .then((docs) => {
@@ -109,10 +100,8 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
                     next(createError(404, "Not found", `No ${name}s found`));
                     return docs;
                 }
-                if(req.res === undefined){
-                    reject("req.res is undefined. Set locals properly");
-                    next("req.res is undefined. Set locals properly");
-                }else if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
+                
+                if (res.locals.no_send == undefined || res.locals.no_send == false) {
                     res.json(createResponse(`${name} found with details:`, docs));
                 }
                 resolve(docs);
@@ -138,11 +127,9 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
                     next(createError(404, "Not found", `Not data found`));
                     return docs;
                 }
-                if(req.res === undefined){
-                    reject("req.res is undefined. Set locals properly");
-                    next("req.res is undefined. Set locals properly");
-                }else if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
-                    res.json(createResponse(`data found with details:`, docs));
+                
+                if (res.locals.no_send == undefined || res.locals.no_send == false) {
+                    res.json(createResponse(`${name} found with details:`, docs));
                 }
                 resolve(docs);
                 return docs;
@@ -156,20 +143,17 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
 
   /**
      * POST /
-     * Deletes all documents by query
+     * Deletes all documents
      */
 
-    const all_delete = (req: Request, res: Response, next: NextFunction) => {
+    const all_delete = (_: Request, res: Response, next: NextFunction) => {
         return new Promise <any> ((resolve, reject) => {
             model.remove({})
-            .then((docs: any) => {
-                if(req.res === undefined){
-                    reject("req.res is undefined. Set locals properly");
-                    next("req.res is undefined. Set locals properly");
-                }else if (req.res.locals.no_send == undefined || req.res.locals.no_send == false) {
-                    res.json(createResponse(`data found with details:`, docs));
+            .then((_: any) => {
+                if (res.locals.no_send == undefined || res.locals.no_send == false) {
+                    res.json(createResponse(`data removed:`, ''));
                 }
-                resolve(docs);
+                resolve();
             })
             .catch((err) => {
                 reject(err);
@@ -178,7 +162,40 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
         });
     };
 
-  return [create, get, update, all, all_query, all_delete];
+    /**
+     * POST /
+     * Deletes all documents by the query supplied
+     */
+    const delete_query = (req: Request, res: Response, next: NextFunction) => {
+        return new Promise <number> ((resolve, reject) => {
+            if (req.query == undefined) {
+                reject();
+
+                if (res.locals.no_send == undefined || res.locals.no_send == false) {
+                    next(createError(400, "Query not provided to delete", ""));
+                }
+                return;
+            }
+
+            model.deleteMany(req.body.query)
+            .then(result => {
+                if (res.locals.no_send == undefined || res.locals.no_send == false) {
+                    if (result.deletedCount != 0) {
+                        res.json(createResponse("Data removed", ""));
+                    } else {
+                        res.json(createResponse("No data removed", ""));
+                    }
+                }
+                resolve(result.deletedCount);
+            })
+            .catch(err => {
+                reject(err);
+                next(err);
+            })
+        });
+    }
+
+  return [create, get, update, all, all_query, all_delete, delete_query];
 };
 
 export default initCRUD;

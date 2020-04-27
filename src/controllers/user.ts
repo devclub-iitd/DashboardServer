@@ -4,29 +4,23 @@ import initCRUD from "../utils/crudFactory";
 // import rp from "request-promise";
 
 // import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET } from "../utils/secrets";
-import { JWT_SECRET } from "../utils/secrets";
-import { ADMIN_SECRET } from "../utils/secrets";
+import { JWT_SECRET, ADMIN_ENTRY } from "../utils/secrets";
+//import { ADMIN_SECRET } from "../utils/secrets";
 // import logger from "../utils/logger";
 import jwt, { Secret } from "jsonwebtoken";
 import { createResponse, createError } from "../utils/helper";
 import { Request, Response, NextFunction } from "express";
 // import { checkToken, isSameUser } from "../middlewares/auth";
-const bcrypt = require("bcrypt");
-const SALT_WORK_FACTOR = 10;
+import bcrypt from "bcrypt";
+import { isAdmin, checkAdmin, checkToken, hashPassword } from "../middlewares/auth";
 
 const router = express.Router({mergeParams: true});
-const [create, , update, all, all_query, all_delete] = initCRUD(User);
+const [create, , update, all, all_query, all_delete, delete_query] = initCRUD(User);
 
 const register = (req: Request, res: Response, next: NextFunction) => {
     req.body.privelege_level = "Unapproved_User";
     req.body.display_on_website = false;
-    if (req.res == undefined) {
-        req.res = res;
-    }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
+    res.locals.no_send = true;
     create(req, res, next)
     .then((_: any) => {
         res.json(createResponse("Request sent to the Administrator", _));
@@ -39,13 +33,7 @@ const register = (req: Request, res: Response, next: NextFunction) => {
 const getUnapproved = (req: Request, res: Response, next: NextFunction) => {
     const my_query = {privelege_level: "Unapproved_User"};
     req.body.query = my_query;
-    if (req.res == undefined) {
-        req.res = res;
-    }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
+    res.locals.no_send = true;
     all_query(req, res, next)
     .then((data: any) => {
         return res.json(createResponse("Results", data));
@@ -66,29 +54,30 @@ const login = (req: Request, res: Response, next: NextFunction) => {
     // Retrieve the username from the database
     User.findOne({entry_no: my_entryNumber}).then((userDoc) => {
         if (!userDoc) {
-            next(createError(404, "Not found", `User with entryNumber ${my_entryNumber} does not exist`));
+            return next(createError(404, "Not found", `User with entryNumber ${my_entryNumber} does not exist`));
         } else {
             const userObject = userDoc.toObject();
 
-            // Get the password
-            const userPassword = userObject.password;
+            // Get the hashed password
+            const passwordHash = userObject.password;
 
-            if (userObject.privelege_level == "Unapproved_User") {
-                next(createError(500, "You are not yet approved", ``));
-            }
+            // Just.. No.
+            //console.log(userPassword);
+            //console.log(my_password);
 
-            console.log(userPassword);
-            console.log(my_password);
-            bcrypt.compare(my_password, userPassword, function(err: any, _: any) {
-                if (err) {
-                    next(createError(400, "Incorrect login", `User with username ${my_entryNumber} does not exist or incorrect password entered`));
+            bcrypt.compare(my_password, passwordHash, function(err, passMatch) {
+                if (err || !passMatch) {
+                    return next(createError(400, "Incorrect login", `User with username ${my_entryNumber} does not exist or incorrect password entered`));
+                } else if (userObject.privelege_level == "Unapproved_User") {
+                    return next(createError(400, "Unapproved user", "You are not approved"));
                 }
-                const payload = {user: userObject.entry_no};
+                
+                const payload = {_id: userObject._id};
                 const options = {expiresIn: "2d", issuer: "devclub-dashboard"};
                 const secret = JWT_SECRET as Secret;
 
                 if (secret === undefined) {
-                    next(createError(500, "Incorrect configuration", `Token secret key not initialized`));
+                    return next(createError(500, "Incorrect configuration", `Token secret key not initialized`));
                 }
 
                 const token = jwt.sign(payload, secret, options);
@@ -96,18 +85,45 @@ const login = (req: Request, res: Response, next: NextFunction) => {
                 const result = {
                     token: token,
                     status: 200,
-                    result: userObject
+                    result: userDoc
                 };
 
                 res.status(200).send(result);
-                return result;
             });
         }
     })
     .catch((err) => {
-        next(err);
+        return next(err);
     });
 };
+
+
+// Authenticate user before this
+const changePassword = (req: Request, res: Response, next: NextFunction) => {
+    if (res.locals.logged_user_id == undefined) {
+        return next(createError(500, "Internal Error", "User not authenticated"));
+    }
+
+    if (req.body.newPassword == undefined) {
+        return next(createError(400, "New password not given", "Expected newPassword in body of request"));
+    }
+
+    hashPassword(req.body.newPassword)
+        .then(passwordHash => {
+            res.locals.no_send = true;
+            req.params.id = res.locals.logged_user_id;
+            req.body = {
+                password: passwordHash,
+                updated_by: res.locals.logged_user_id
+            };
+            
+            console.log(passwordHash);
+            update(req, res, next)
+                .then(_ => res.json(createResponse("Password updated", "")))
+                .catch(err => next(err));
+        })
+        .catch(err => next(err));
+}
 
 // const login = (req: Request, res: Response, next: NextFunction) => {
 
@@ -204,7 +220,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
 // };
 
 const pswd_hash = (req: Request, _: Response, next: NextFunction) => {
-    bcrypt.genSalt(SALT_WORK_FACTOR, function (err: any, salt: any) {
+    /* bcrypt.genSalt(SALT_WORK_FACTOR, function (err: any, salt: any) {
         if (err) console.log(err);
         // hash the password using our new salt
         bcrypt.hash(req.body.password, salt, function (err: any, hash: any) {
@@ -212,67 +228,36 @@ const pswd_hash = (req: Request, _: Response, next: NextFunction) => {
             req.body.password = hash;
             next();
         });
-    });
+    }); */
+    hashPassword(req.body.password)
+        .then(passwordHash => {
+            req.body.password = passwordHash;
+            next();
+        })
+        .catch(err => console.log(err));
 };
 
-const approve_user = (req: Request, res: Response, next: NextFunction) => {
-    const my_query = {entry_no: req.body.entry_no};
-    req.body.query = my_query;
-    if (req.res == undefined) {
-        req.res = res;
+const reject_all = (req: Request, res: Response, next: NextFunction) => {
+    if (res.locals.logged_user_id == undefined) {
+        return next(createError(500, "User not authenticated", "User id not found"));
     }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
-    all_query(req, res, next)
-    .then((data: any) => {
-        req.body = {};
-        req.body.privelege_level = "Approved_User";
-        req.params.id = data[0]["_id"];
-        update(req, res, next)
-        .then((fresh_data: any) => {
-            res.json(createResponse("Approved User", fresh_data));
-        })
-        .catch((err: any) => {
-            res.json(createResponse("Error while registering", err));
-        });
-    })
-    .catch((err: any) => {
-        res.json(createResponse("Error while registering", err));
-    });
-};
+
+    req.body.query = {privelege_level: "Unapproved_User"};
+    res.locals.no_send = true;
+    delete_query(req, res, next)
+        .then(() => res.send("All unapproved users rejected successfully"))
+        .catch(err => next(err));
+}
 
 const update_record = (req: Request, res: Response, next: NextFunction) => {
-    const my_query = {entry_no: req.params.id};
-    console.log(my_query);
-
-    req.body.query = my_query;
-    if (req.res == undefined) {
-        req.res = res;
+    req.body.updated_by = res.locals.logged_user_id;
+    if (!res.locals.isAdmin) {
+        req.body.privelege_level = undefined;
     }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
-    all_query(req, res, next)
-    .then((data: any) => {
-        req.body.query = {};
-        req.params.id = data[0]["_id"];
-        update(req, res, next)
-        .then((fresh_data: any) => {
-            res.json(createResponse("Record updated", fresh_data));
-        })
-        .catch((err: any) => {
-            res.json(createResponse("Error while registering", err));
-        });
-    })
-    .catch((err: any) => {
-        res.json(createResponse("Error while registering", err));
-    });
+    update(req, res, next);
 };
 
-const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
+/* const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
     bcrypt.compare(ADMIN_SECRET, req.body.password, function(err: any, _: any) {
         if (err) {
             console.log(err)
@@ -280,32 +265,69 @@ const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
         };
         next();
     });
-};
+}; */
 
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
-    if (req.res == undefined) {
-        req.res = res;
-    }
-    if (req.res.locals == undefined) {
-        req.res.locals = {};
-    }
-    req.res.locals.no_send = true;
-    all_delete(req, res, next)
+    res.locals.no_send = true;
+    req.body.query = { entry_no: { $ne: ADMIN_ENTRY } };
+    delete_query(req, res, next)
     .then((_: any) => {
         res.json(createResponse("Records deleted", ""));
     })
     .catch((err: any) => {
-        res.json(createResponse("Error while deleting", err));
+        res.json(createError(500, "Error while deleting", err));
     });
 };
 
-router.post('/deleteAll/', chk_pswd, delete_record);
+// Takes in req.body.id as the id of the doc to be deleted
+const delete_user = (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.id == undefined) {
+        return next(createError(400, "User id missing", "Please specify id in body"))
+    }
+
+    req.body.query = {_id: req.body.id, entry_no: { $ne: ADMIN_ENTRY } };
+    delete_query(req, res, next);
+}
+
+// Get all docs with display_on_website true
+const all_website = (req: Request, res: Response, next: NextFunction) => {
+    req.body.query = {display_on_website: true};
+    all_query(req, res, next);
+}
+
+/*
+* Must be called after a call to checkAdmin. Relies on property res.locals.checkAdmin
+* to be present for admin access.
+*/
+const isSameUserOrAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if (res.locals.isAdmin === undefined) {
+        return next(createError(500, "Internal error", "res.locals.isAdmin property not set"));
+    }
+
+    if (res.locals.isAdmin) return next();
+    else if(res.locals.logged_user_id == req.params.id) return next()
+    else{
+      next(createError(401,'Unauthorized','User is unauthorized for this endpoint.'))
+    }
+};
+
+router.post('/testAdmin/', isAdmin, (_0: Request, res: Response, _2: NextFunction) => {
+    res.send("You are a admin, Harry");}
+);
+router.post('/testAdminSelf/:id', checkAdmin, isSameUserOrAdmin, (_0: Request, res: Response, _2: NextFunction) => {
+    res.send("You were looking for yourself, Harry. Or you are an admin idk");}
+);
+
+router.post('/deleteAll/', isAdmin, delete_record);
+router.post('/delete', isAdmin, delete_user);
 router.post('/', create);
-router.put('/:id', update_record);
+router.put('/:id', checkAdmin, isSameUserOrAdmin, update_record);
 router.post("/login", login);
-router.post("/approve", approve_user); 		// Add a middleware to checkAdmin
-router.get("/getAll/", all);
-router.get("/query/", all_query);
+router.post("/changePassword", checkToken, changePassword);
+router.post("/rejectAll", isAdmin, reject_all);
+router.get("/getAll/", all_website);
+router.get("/getAllDB", checkToken, all);
+router.post("/query/", all_query);
 router.post("/register", pswd_hash, register);
 router.get("/unapproved", getUnapproved);
 
