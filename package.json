@@ -33,6 +33,7 @@
     "@types/mongoose": "^5.7.8",
     "@types/request": "^2.48.1",
     "@types/request-promise": "^4.1.42",
+    "@types/traverse": "^0.6.32",
     "@types/validator": "^10.11.0",
     "bcrypt": "^3.0.6",
     "bluebird": "^3.5.4",
@@ -46,6 +47,7 @@
     "jsonwebtoken": "^8.5.1",
     "lusca": "^1.6.1",
     "mongoose": "^5.9.6",
+    "traverse": "^0.6.6",
     "validator": "^11.0.0",
     "winston": "^3.2.1"
   },

@@ -167,7 +167,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      * Deletes all documents by the query supplied
      */
     const delete_query = (req: Request, res: Response, next: NextFunction) => {
-        return new Promise <void> ((resolve, reject) => {
+        return new Promise <number> ((resolve, reject) => {
             if (req.query == undefined) {
                 reject();
 
@@ -178,11 +178,15 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
             }
 
             model.deleteMany(req.body.query)
-            .then(_ => {
+            .then(result => {
                 if (res.locals.no_send == undefined || res.locals.no_send == false) {
-                    res.json(createResponse("Data removed", ""));
+                    if (result.deletedCount != 0) {
+                        res.json(createResponse("Data removed", ""));
+                    } else {
+                        res.json(createResponse("No data removed", ""));
+                    }
                 }
-                resolve();
+                resolve(result.deletedCount);
             })
             .catch(err => {
                 reject(err);

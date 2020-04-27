@@ -11,27 +11,8 @@ import { Request, Response, NextFunction } from "express";
 //const bcrypt = require("bcrypt");
 
 const update_record = (req: Request, res: Response, next: NextFunction) => {
-    const my_query = {name: req.params.id};
-    console.log(my_query);
-
-    req.body.query = my_query;
-    res.locals.no_send = true;
-    all_query(req, res, next)
-    .then((data: any) => {
-        req.body.query = {};
-        req.body.updated_by = res.locals.logged_user_id;
-        req.params.id = data[0]["_id"];
-        update(req, res, next)
-        .then((fresh_data: any) => {
-            res.json(createResponse("Record updated", fresh_data));
-        })
-        .catch((err: any) => {
-            res.json(createResponse("Error while registering", err));
-        });
-    })
-    .catch((err: any) => {
-        res.json(createResponse("Error while registering", err));
-    });
+    req.body.updated_by = res.locals.logged_user_id;
+    update(req, res, next);
 };
 
 /* const chk_pswd = (req: Request, res: Response, next: NextFunction) => {

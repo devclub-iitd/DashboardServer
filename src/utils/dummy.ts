@@ -90,7 +90,7 @@ const users = [
       "github": "lol",
       "photo": "lol"
     },
-    privelege_level: "Admin"
+    privelege_level: "Approved_User"
   }
 ];
 
@@ -146,7 +146,7 @@ const events = [
       url: "intro.devclub.in"
     },
     embed_code: "Bla Bla",
-    assignee: "Atishya",
+    assignee: [0],
     created_by: 0,
     updated_by: 0
   }
@@ -226,6 +226,11 @@ const createDummyData = () => {
       return Project.create(projects)
         .then((createdProjects) => {
           for (let i = 0; i < events.length; i++) {
+            const memIds: number[] = [];
+            for (let j = 0; j < events[i].assignee.length; j++) {
+              memIds.push(createdUsers[events[i].assignee[j]].id);
+            }
+            events[i].assignee = memIds;
             if (events[i].created_by != undefined) {
               events[i].created_by = createdUsers[events[i].created_by].id;
             }
