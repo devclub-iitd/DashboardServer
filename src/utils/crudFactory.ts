@@ -168,7 +168,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
      */
     const delete_query = (req: Request, res: Response, next: NextFunction) => {
         return new Promise <number> ((resolve, reject) => {
-            if (req.query == undefined) {
+            if (req.body.query == undefined) {
                 reject();
 
                 if (res.locals.no_send == undefined || res.locals.no_send == false) {

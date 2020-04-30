@@ -15,7 +15,7 @@ import bcrypt from "bcrypt";
 import { isAdmin, checkAdmin, checkToken, hashPassword } from "../middlewares/auth";
 
 const router = express.Router({mergeParams: true});
-const [create, , update, all, all_query, delete_query] = initCRUD(User);
+const [create, , update, all, all_query, , delete_query] = initCRUD(User);
 
 const register = (req: Request, res: Response, next: NextFunction) => {
     req.body.privelege_level = "Unapproved_User";
