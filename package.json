@@ -19,7 +19,20 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "debug": "npm run build && npm run watch-debug",
     "serve-debug": "nodemon --inspect dist/server.js",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\"",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check",
+    "eslint-test": "eslint './src/*.ts'",
+    "eslint-fix": "eslint --fix './src/*.ts'",
+    "prettier-test": "prettier --check './src/*.ts'",
+    "prettier-fix": "prettier --write './src/*.ts'",
+    "lint-tests": "npm run eslint-test;npm run prettier-test",
+    "lint-fixes": "npm run eslint-fix;npm run prettier-fix"
   },
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -52,15 +65,12 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.10.2",
-    "@typescript-eslint/parser": "^1.10.2",
     "concurrently": "^4.1.0",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb-typescript": "^4.0.0",
-    "eslint-plugin-import": "^2.17.3",
     "minimist": "^1.2.5",
     "nodemon": "^1.19.1",
-    "typescript": "^3.5.2"
+    "typescript": "^3.8.3",
+    "gts": "^2.0.2",
+    "@types/node": "^13.11.1"
   },
   "bugs": {
     "url": "https://github.com/devclub-iitd/DashboardServer/issues"
