@@ -10,3 +10,10 @@ export const createError = (status: number, name: string, message: string) => {
   e.message = message;
   return e;
 };
+
+// Help TypeScript narrow down type
+// Source: https://fettblog.eu/typescript-hasownproperty/
+export const hasOwnProperty = <X extends {}, Y extends PropertyKey>
+  (obj: X, prop: Y): obj is X & Record<Y, unknown> => {
+  return obj.hasOwnProperty(prop)
+}

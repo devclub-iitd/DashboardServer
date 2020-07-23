@@ -41,10 +41,10 @@ const create_record = (req: Request, res: Response, next: NextFunction) => {
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
   res.locals.no_send = true;
   all_delete(req, res, next)
-    .then((_: any) => {
+    .then(_ => {
       res.json(createResponse('Records deleted', ''));
     })
-    .catch((err: any) => {
+    .catch(err => {
       res.json(createResponse('Error while deleting', err));
     });
 };

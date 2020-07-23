@@ -35,7 +35,7 @@ mongoose
     console.log(
       'MongoDB connection error. Please make sure MongoDB is running. ' + err
     );
-    process.exit();
+    throw new Error('MongoDB Connection Error');
   });
 
 // Express configuration

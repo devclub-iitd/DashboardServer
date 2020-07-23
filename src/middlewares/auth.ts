@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 import {Request, Response, NextFunction} from 'express';
 import {JWT_SECRET} from '../utils/secrets';
-import {createError} from '../utils/helper';
+import {createError, hasOwnProperty} from '../utils/helper';
 import User from '../models/user';
 
 import bcrypt from 'bcrypt';
@@ -10,7 +10,7 @@ const SALT_WORK_FACTOR = 10;
 
 export const hashPassword = (password: string) => {
   return new Promise<string>((resolve, reject) => {
-    bcrypt.genSalt(SALT_WORK_FACTOR, (err: any, salt: any) => {
+    bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
       if (err) return reject(err);
       bcrypt.hash(password, salt, (err, hash) => {
         if (err) return reject(err);
@@ -27,7 +27,7 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
       // Remove Bearer from string
       token = token.slice(7, token.length);
     }
-    jwt.verify(token, JWT_SECRET, (err, userDecoded: any) => {
+    jwt.verify(token, JWT_SECRET, (err, userDecoded) => {
       if (err) {
         next(
           createError(
@@ -36,6 +36,14 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
             'User is unauthorized. Token is invalid'
           )
         );
+      } else if (userDecoded == undefined || !hasOwnProperty(userDecoded, '_id')) {
+        next(
+          createError(
+            401,
+            'Unauthorized',
+            'No user associated with the token'
+          )
+        )
       } else {
         const id = userDecoded['_id'];
         res.locals.logged_user_id = id;

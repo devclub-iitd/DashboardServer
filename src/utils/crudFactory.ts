@@ -56,8 +56,9 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
                 `${name} does not exist with id ${req.params.id}`
               )
             );
+          }
 
-                if (res.locals.no_send == undefined || res.locals.no_send == false) {
+          if (res.locals.no_send == undefined || res.locals.no_send == false) {
             res.json(createResponse(`${name} found with details:`, doc));
           }
           resolve(doc);

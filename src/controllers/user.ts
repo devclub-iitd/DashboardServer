@@ -90,7 +90,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
             return next(
               createError(400, 'Unapproved user', 'You are not approved')
             );
-
+          }
 
           const payload = {_id: userObject._id};
           const options = {expiresIn: '2d', issuer: 'devclub-dashboard'};
