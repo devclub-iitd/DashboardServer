@@ -8,6 +8,8 @@ import {hashPassword} from '../middlewares/auth';
 import User from '../models/user';
 import {ADMIN_ENTRY, ADMIN_PASS} from '../utils/secrets';
 
+export let ADMIN_ID: string;
+
 // Creates devclub admin user if not already present in DB
 const initAdmin = () => {
   hashPassword(ADMIN_PASS)
@@ -17,7 +19,23 @@ const initAdmin = () => {
         entry_no: ADMIN_ENTRY,
       })
         .then(doc => {
-          if (doc) return console.log('Devclub admin exists');
+          if (doc != null) {
+            ADMIN_ID = doc._id;
+            console.log('Devclub user exists');
+            if (doc.get('privelege_level') != 'Admin') {
+              console.log('Devclub user is not admin. Making it an admin.');
+              doc.set('privelege_level', 'Admin');
+              doc.save()
+              .then(_ => console.log('Devclub user is now an admin'))
+              .catch(err => {
+                console.error(err);
+                throw new Error("Unable to make devclub user an admin");
+              });
+            } else {
+              console.log('Devclub user is admin');
+            }
+            return;
+          }
           User.create({
             entry_no: ADMIN_ENTRY,
             password: admPassHash,
@@ -34,7 +52,10 @@ const initAdmin = () => {
             gender: 'other',
             hometown: 'Delhi',
           })
-            .then(_ => console.log('Devclub admin user created'))
+            .then(doc => {
+              ADMIN_ID = doc._id;
+              console.log('Devclub admin user created')
+            })
             .catch(err => console.error(err));
         })
         .catch(err => console.error(err));

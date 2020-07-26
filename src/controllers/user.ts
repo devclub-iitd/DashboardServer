@@ -5,6 +5,7 @@ import initCRUD from '../utils/crudFactory';
 
 // import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET } from "../utils/secrets";
 import {JWT_SECRET, ADMIN_ENTRY} from '../utils/secrets';
+import {ADMIN_ID} from '../utils/init';
 //import { ADMIN_SECRET } from "../utils/secrets";
 // import logger from "../utils/logger";
 import jwt, {Secret} from 'jsonwebtoken';
@@ -287,6 +288,13 @@ const update_record = (req: Request, res: Response, next: NextFunction) => {
   if (!res.locals.isAdmin) {
     req.body.privelege_level = undefined;
   }
+
+  // Prevent devclub user's entry and privilege from change
+  if (req.params.id == ADMIN_ID) {
+    delete req.body.entry_no;
+    delete req.body.privelege_level;
+  }
+
   update(req, res, next);
 };
 
