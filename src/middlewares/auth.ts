@@ -6,6 +6,7 @@ import {createError, hasOwnProperty} from '../utils/helper';
 import User from '../models/user';
 
 import bcrypt from 'bcrypt';
+import {FilterQuery} from 'mongoose';
 const SALT_WORK_FACTOR = 10;
 
 export const hashPassword = (password: string) => {
@@ -36,14 +37,13 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
             'User is unauthorized. Token is invalid'
           )
         );
-      } else if (userDecoded == undefined || !hasOwnProperty(userDecoded, '_id')) {
+      } else if (
+        userDecoded == undefined ||
+        !hasOwnProperty(userDecoded, '_id')
+      ) {
         next(
-          createError(
-            401,
-            'Unauthorized',
-            'No user associated with the token'
-          )
-        )
+          createError(401, 'Unauthorized', 'No user associated with the token')
+        );
       } else {
         const id = userDecoded['_id'];
         res.locals.logged_user_id = id;
@@ -79,7 +79,7 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
  * Else, the given property is marked as false (and marked true if user is present) and
  * next middleware is called
  */
-const isUser = (query: any, prop?: string) => {
+const isUser = (query: FilterQuery<typeof User>, prop?: string) => {
   return (_: Request, res: Response, next: NextFunction) => {
     const report = (response: number, title: string, msg: string) => {
       if (prop == undefined) {

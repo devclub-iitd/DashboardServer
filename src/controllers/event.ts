@@ -7,7 +7,7 @@ import {Request, Response, NextFunction} from 'express';
 import {checkToken, isAdmin} from '../middlewares/auth';
 
 const router = express.Router({mergeParams: true});
-const [
+const {
   create,
   get,
   update,
@@ -15,18 +15,7 @@ const [
   all_query,
   all_delete,
   delete_query,
-] = initCRUD(Event);
-//const bcrypt = require("bcrypt");
-
-/* const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
-    bcrypt.compare(ADMIN_SECRET, req.body.password, function(err: any, _: any) {
-        if (err) {
-            console.log(err)
-            res.json(createResponse("You are not authorised to perform this action. Your details have been reported", ""));
-        };
-        next();
-    });
-}; */
+} = initCRUD(Event);
 
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
   res.locals.no_send = true;

@@ -4,10 +4,11 @@ import logger from '../utils/logger';
 function logRequest(req: Request, res: Response, next: NextFunction) {
   // http://www.senchalabs.org/connect/responseTime.html
   const start = new Date();
-  if ((res as any)._responseTime) {
+
+  /*if (res._responseTime) {
     return next();
   }
-  (res as any)._responseTime = true;
+  res._responseTime = true;*/
 
   const ip =
     req.header('x-forwarded-for') ||

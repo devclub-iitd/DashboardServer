@@ -6,7 +6,7 @@ import {createResponse, createError} from '../utils/helper';
 import {checkToken, isAdmin} from '../middlewares/auth';
 
 const router = express.Router({mergeParams: true});
-const [
+const {
   create,
   get,
   update,
@@ -14,7 +14,7 @@ const [
   all_query,
   all_delete,
   delete_query,
-] = initCRUD(Item);
+} = initCRUD(Item);
 
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
   res.locals.no_send = true;

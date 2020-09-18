@@ -10,28 +10,22 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
    * Create a document
    */
   const create = (req: Request, res: Response, next: NextFunction) => {
-    console.log('CREATE CREATE CREATE');
     console.log(req.body);
 
-    return new Promise<any>((resolve, reject) => {
-      console.log('Andar AAye?');
+    return new Promise<mongoose.Document>((resolve, reject) => {
       model
         .create(req.body)
         .then(createdDoc => {
-          console.log('Doc bana?');
           if (res.locals.no_send == undefined || res.locals.no_send == false) {
-            console.log('or here??');
             res.json(
               createResponse(`${name} created with details:`, createdDoc)
             );
           }
-          console.log('you should be here??');
 
           resolve(createdDoc);
           return createdDoc;
         })
         .catch(err => {
-          console.log('Nahi bana?');
           console.log(err);
           reject(err);
           next(err);
@@ -44,18 +38,18 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
    * Get an existing document.
    */
   const get = (req: Request, res: Response, next: NextFunction) => {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<mongoose.Document>((resolve, reject) => {
       model
         .findById(req.params.id)
         .then(doc => {
           if (!doc) {
-            next(
+            return next(
               createError(
                 404,
                 'Not found',
                 `${name} does not exist with id ${req.params.id}`
               )
-            );
+            ); // TODO: Not sure about whether to reject too
           }
 
           if (res.locals.no_send == undefined || res.locals.no_send == false) {
@@ -77,7 +71,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
    * Update an existing document by id .
    */
   const update = (req: Request, res: Response, next: NextFunction) => {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<mongoose.Document>((resolve, reject) => {
       model
         .findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true})
         .then(doc => {
@@ -111,7 +105,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
    * Gets all documents
    */
   const all = (_: Request, res: Response, next: NextFunction) => {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<mongoose.Document[]>((resolve, reject) => {
       model
         .find({})
         .then(docs => {
@@ -139,12 +133,12 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
    */
 
   const all_query = (req: Request, res: Response, next: NextFunction) => {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<mongoose.Document[]>((resolve, reject) => {
       model
         .find(req.body.query)
         .then(docs => {
           if (!docs) {
-            next(createError(404, 'Not found', `Not data found`));
+            next(createError(404, 'Not found', 'Not data found'));
             return docs;
           }
 
@@ -167,12 +161,12 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
    */
 
   const all_delete = (_: Request, res: Response, next: NextFunction) => {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       model
         .remove({})
-        .then((_: any) => {
+        .then(_ => {
           if (res.locals.no_send == undefined || res.locals.no_send == false) {
-            res.json(createResponse(`data removed:`, ''));
+            res.json(createResponse('data removed:', ''));
           }
           resolve();
         })
@@ -217,7 +211,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
     });
   };
 
-  return [create, get, update, all, all_query, all_delete, delete_query];
+  return {create, get, update, all, all_query, all_delete, delete_query};
 };
 
 export default initCRUD;

@@ -25,12 +25,13 @@ const initAdmin = () => {
             if (doc.get('privelege_level') != 'Admin') {
               console.log('Devclub user is not admin. Making it an admin.');
               doc.set('privelege_level', 'Admin');
-              doc.save()
-              .then(_ => console.log('Devclub user is now an admin'))
-              .catch(err => {
-                console.error(err);
-                throw new Error("Unable to make devclub user an admin");
-              });
+              doc
+                .save()
+                .then(_ => console.log('Devclub user is now an admin'))
+                .catch(err => {
+                  console.error(err);
+                  throw new Error('Unable to make devclub user an admin');
+                });
             } else {
               console.log('Devclub user is admin');
             }
@@ -54,7 +55,7 @@ const initAdmin = () => {
           })
             .then(doc => {
               ADMIN_ID = doc._id;
-              console.log('Devclub admin user created')
+              console.log('Devclub admin user created');
             })
             .catch(err => console.error(err));
         })

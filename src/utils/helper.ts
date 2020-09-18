@@ -1,11 +1,11 @@
-export const createResponse = (message: string, data: any) => ({
+export const createResponse = (message: string, data: unknown) => ({
   message: message,
   data: data,
 });
 
-export const createError = (status: number, name: string, message: string) => {
+export const createError = (_: number, name: string, message: string) => {
   const e = new Error();
-  (<any>e).status = status;
+  //e.status = status; <- Seemed useless. TODO: check
   e.name = name;
   e.message = message;
   return e;
@@ -13,7 +13,9 @@ export const createError = (status: number, name: string, message: string) => {
 
 // Help TypeScript narrow down type
 // Source: https://fettblog.eu/typescript-hasownproperty/
-export const hasOwnProperty = <X extends {}, Y extends PropertyKey>
-  (obj: X, prop: Y): obj is X & Record<Y, unknown> => {
-  return obj.hasOwnProperty(prop)
-}
+export const hasOwnProperty = <X extends {}, Y extends PropertyKey>(
+  obj: X,
+  prop: Y
+): obj is X & Record<Y, unknown> => {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+};

@@ -5,7 +5,7 @@ import initCRUD from '../utils/crudFactory';
 import {checkToken, isAdmin} from '../middlewares/auth';
 
 const router = express.Router({mergeParams: true});
-const [
+const {
   create,
   get,
   update,
@@ -13,7 +13,7 @@ const [
   all_query,
   all_delete,
   delete_query,
-] = initCRUD(Project);
+} = initCRUD(Project);
 import {createResponse, createError} from '../utils/helper';
 import {Request, Response, NextFunction} from 'express';
 //const bcrypt = require("bcrypt");

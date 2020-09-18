@@ -26,7 +26,7 @@ if (GITHUB_CLIENT_ID == '' || GITHUB_CLIENT_SECRET == '' || JWT_SECRET == '') {
   logger.error(
     'No github client secret or github client id. Set environment variable.'
   );
-  process.exit(1);
+  throw new Error('Set env variable for github client secret/id');
 }
 
 // if (!SESSION_SECRET) {
@@ -38,7 +38,7 @@ if (!MONGODB_URI) {
   logger.error(
     'No mongo connection string. Set MONGODB_URI environment variable.'
   );
-  process.exit(1);
+  throw new Error('No mongo connection string');
 }
 
 export const ADMIN_ENTRY: string = process.env['ADMIN_ENTRY'] || '';
@@ -48,5 +48,5 @@ if (ADMIN_ENTRY == '' || ADMIN_PASS == '') {
   logger.error(
     'Admin entry number or password missing. Set ADMIN_ENTRY and ADMIN_PASS environment variables'
   );
-  process.exit(1);
+  throw new Error('Admin entry number or password missing');
 }

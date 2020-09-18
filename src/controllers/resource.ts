@@ -7,7 +7,7 @@ import {Request, Response, NextFunction} from 'express';
 import {checkToken, isAdmin} from '../middlewares/auth';
 
 const router = express.Router({mergeParams: true});
-const [
+const {
   create,
   get,
   update,
@@ -15,7 +15,7 @@ const [
   all_query,
   all_delete,
   delete_query,
-] = initCRUD(Resources);
+} = initCRUD(Resources);
 //const bcrypt = require("bcrypt");
 
 /*const chk_pswd = (req: Request, res: Response, next: NextFunction) => {

@@ -207,7 +207,7 @@ const items = [
 ];
 
 const createDummyData = () => {
-  return User.create(users)
+  return User.insertMany(users)
     .then(createdUsers => {
       for (let i = 0; i < projects.length; i++) {
         const memIds = [];
@@ -222,7 +222,7 @@ const createDummyData = () => {
           projects[i].updated_by = createdUsers[projects[i].updated_by].id;
         }
       }
-      return Project.create(projects).then(createdProjects => {
+      return Project.insertMany(projects).then(createdProjects => {
         for (let i = 0; i < events.length; i++) {
           const memIds: number[] = [];
           for (let j = 0; j < events[i].assignee.length; j++) {
@@ -236,7 +236,7 @@ const createDummyData = () => {
             events[i].updated_by = createdUsers[events[i].updated_by].id;
           }
         }
-        return Event.create(events).then(createdEvents => {
+        return Event.insertMany(events).then(createdEvents => {
           for (let i = 0; i < resources.length; i++) {
             if (resources[i].created_by != undefined) {
               resources[i].created_by =
@@ -247,7 +247,7 @@ const createDummyData = () => {
                 createdUsers[resources[i].updated_by].id;
             }
           }
-          return Resources.create(resources).then(createdResources => {
+          return Resources.insertMany(resources).then(createdResources => {
             for (let i = 0; i < items.length; i++) {
               const idx: number = items[i].parentId as number;
               if (items[i].type == 'event') {
@@ -269,7 +269,7 @@ const createDummyData = () => {
                 items[i].updated_by = createdUsers[items[i].updated_by].id;
               }
             }
-            return Item.create(items).then(x => [
+            return Item.insertMany(items).then(x => [
               x,
               createdResources,
               createdUsers,

@@ -21,17 +21,17 @@ import {
 } from '../middlewares/auth';
 
 const router = express.Router({mergeParams: true});
-const [create, , update, all, all_query, , delete_query] = initCRUD(User);
+const {create, update, all, all_query, delete_query} = initCRUD(User);
 
 const register = (req: Request, res: Response, next: NextFunction) => {
   req.body.privelege_level = 'Unapproved_User';
   req.body.display_on_website = false;
   res.locals.no_send = true;
   create(req, res, next)
-    .then((_: any) => {
+    .then(_ => {
       res.json(createResponse('Request sent to the Administrator', _));
     })
-    .catch((err: any) => {
+    .catch(err => {
       res.json(createResponse('Error while registering', err));
     });
 };
@@ -41,7 +41,7 @@ const getUnapproved = (req: Request, res: Response, next: NextFunction) => {
   req.body.query = my_query;
   res.locals.no_send = true;
   all_query(req, res, next)
-    .then((data: any) => {
+    .then(data => {
       return res.json(createResponse('Results', data));
     })
     .catch(err => {
@@ -78,7 +78,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
         //console.log(userPassword);
         //console.log(my_password);
 
-        bcrypt.compare(my_password, passwordHash, function (err, passMatch) {
+        bcrypt.compare(my_password, passwordHash, (err, passMatch) => {
           if (err || !passMatch) {
             return next(
               createError(
@@ -102,7 +102,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
               createError(
                 500,
                 'Incorrect configuration',
-                `Token secret key not initialized`
+                'Token secret key not initialized'
               )
             );
           }
@@ -157,110 +157,7 @@ const changePassword = (req: Request, res: Response, next: NextFunction) => {
     .catch(err => next(err));
 };
 
-// const login = (req: Request, res: Response, next: NextFunction) => {
-
-//     const code_from_github: string = req.body.code;
-
-//     const get_access_token_options = {
-//         method: 'POST',
-//         uri: 'https://github.com/login/oauth/access_token',
-//         body: {
-//             'client_id': GITHUB_CLIENT_ID,
-//             'client_secret': GITHUB_CLIENT_SECRET,
-//             'code': code_from_github
-//         },
-//         json: true,
-//         headers: {
-//             'Accept': 'application/json'
-//         }
-//     };
-
-//     rp(get_access_token_options)
-//         .then((parsedBody) => {
-//             const access_token: string = parsedBody['access_token'] || '';
-//             if (access_token == '') {
-//                 logger.warn('Access Token not found');
-//                 throw (createError(401,"Unauthorized",`Invalid Code : ${code_from_github}`));
-//             }
-//             return access_token;
-//         })
-//         .then(access_token => {
-//             const get_details = {
-//                 method: 'GET',
-//                 uri: 'https://api.github.com/user',
-//                 json: true,
-//                 headers:{
-//                     'Accept': 'application/json',
-//                     'Authorization': `token ${access_token}`,
-//                     'User-Agent': 'Club Dashboard'
-//                 }
-//             };
-//             return rp(get_details);
-//         })
-//         .then(user_details => {
-//             if (!user_details['email']) {
-//                 logger.warn('User email not found');
-//                 throw (createError(401, "Unauthorized", "No email found"));
-//             }
-//             return user_details;
-//         })
-//         .then(user_details => {
-//             return Promise.all([
-//                 User.findOne({'email': user_details['email']}), user_details]);
-//         })
-//         .then(([userInstance, user_details]) => {
-//             if (!userInstance) {
-//                 const schema_user_details = {
-//                     'email': user_details['email'],
-//                     'name': user_details['name'],
-//                     'links': {
-//                         'avatar': user_details['avatar_url'],
-//                         'github': user_details['html_url']
-//                     }
-//                 };
-//                 return User.create(schema_user_details);
-//             }
-//             else
-//                 return userInstance;
-//         })
-//         .then((createdUser) => {
-//             const jwt_payload = {
-//                 '_id': createdUser._id,
-//             };
-//             const token: string = jwt.sign(jwt_payload, JWT_SECRET, {expiresIn:'7d'});
-//             const resp_data = {
-//                 'authToken': token,
-//                 'email': createdUser.email,
-//                 'name': createdUser.name,
-//                 'privelege_level': createdUser.privelege_level,
-//                 '_id' : createdUser._id
-//             };
-//             res.send(createResponse('Login successful', resp_data));
-//         })
-//         .catch(function (err) {
-//             next(err);
-//         });
-// };
-
-// router.post('/',create);
-// router.get('/', checkToken, all);
-// router.get('/:id', checkToken, get);
-// router.put('/:id', checkToken, isSameUser, update);
-
-// const foo = (req: Request, res: Response, next: NextFunction) => {
-//     return all(req, res, next);
-// };
-
 const pswd_hash = (req: Request, _: Response, next: NextFunction) => {
-  /* bcrypt.genSalt(SALT_WORK_FACTOR, function (err: any, salt: any) {
-        if (err) console.log(err);
-        // hash the password using our new salt
-        bcrypt.hash(req.body.password, salt, function (err: any, hash: any) {
-            if (err) console.log(err);
-            req.body.password = hash;
-            next();
-        });
-    }); */
   hashPassword(req.body.password)
     .then(passwordHash => {
       req.body.password = passwordHash;
@@ -298,24 +195,14 @@ const update_record = (req: Request, res: Response, next: NextFunction) => {
   update(req, res, next);
 };
 
-/* const chk_pswd = (req: Request, res: Response, next: NextFunction) => {
-    bcrypt.compare(ADMIN_SECRET, req.body.password, function(err: any, _: any) {
-        if (err) {
-            console.log(err)
-            res.json(createResponse("You are not authorised to perform this action. Your details have been reported", ""));
-        };
-        next();
-    });
-}; */
-
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
   res.locals.no_send = true;
   req.body.query = {entry_no: {$ne: ADMIN_ENTRY}};
   delete_query(req, res, next)
-    .then((_: any) => {
+    .then(_ => {
       res.json(createResponse('Records deleted', ''));
     })
-    .catch((err: any) => {
+    .catch(err => {
       res.json(createError(500, 'Error while deleting', err));
     });
 };
@@ -366,14 +253,16 @@ router.post(
   '/testAdmin/',
   isAdmin,
   (_0: Request, res: Response, _2: NextFunction) => {
-    res.send('You are a admin, Harry');}
+    res.send('You are a admin, Harry');
+  }
 );
 router.post(
   '/testAdminSelf/:id',
   checkAdmin,
   isSameUserOrAdmin,
   (_0: Request, res: Response, _2: NextFunction) => {
-    res.send('You were looking for yourself, Harry. Or you are an admin idk');}
+    res.send('You were looking for yourself, Harry. Or you are an admin idk');
+  }
 );
 
 router.post('/deleteAll/', isAdmin, delete_record);
