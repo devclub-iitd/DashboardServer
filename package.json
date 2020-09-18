@@ -36,18 +36,18 @@
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/compression": "0.0.36",
-    "@types/cors": "^2.8.4",
+    "@types/cors": "^2.8.7",
     "@types/dotenv": "^6.1.1",
     "@types/errorhandler": "0.0.32",
     "@types/helmet": "0.0.43",
-    "@types/jsonwebtoken": "^8.3.2",
-    "@types/lusca": "^1.6.0",
-    "@types/mongoose": "^5.7.8",
-    "@types/request": "^2.48.1",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/lusca": "^1.6.2",
+    "@types/mongoose": "^5.7.36",
+    "@types/request": "^2.48.5",
     "@types/request-promise": "^4.1.42",
     "@types/traverse": "^0.6.32",
     "@types/validator": "^10.11.0",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "bluebird": "^3.5.4",
     "body-parser": "^1.18.3",
     "compression": "^1.7.4",
@@ -55,21 +55,21 @@
     "dotenv": "^8.0.0",
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
-    "helmet": "^3.18.0",
+    "helmet": "^3.23.3",
     "jsonwebtoken": "^8.5.1",
     "lusca": "^1.6.1",
-    "mongoose": "^5.9.6",
+    "mongoose": "^5.10.5",
     "traverse": "^0.6.6",
     "validator": "^11.0.0",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
-    "concurrently": "^4.1.0",
+    "@types/node": "^13.13.21",
+    "concurrently": "^5.3.0",
+    "gts": "^2.0.2",
     "minimist": "^1.2.5",
     "nodemon": "^1.19.1",
-    "typescript": "^3.8.3",
-    "gts": "^2.0.2",
-    "@types/node": "^13.11.1"
+    "typescript": "^3.9.7"
   },
   "bugs": {
     "url": "https://github.com/devclub-iitd/DashboardServer/issues"
