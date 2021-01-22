@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      //required: true,
       trim: true,
     },
     entry_no: {
@@ -150,6 +150,12 @@ const userSchema = new mongoose.Schema(
       enum: ['Admin', 'Approved_User', 'Unapproved_User'],
       required: true,
       default: 'User',
+    },
+    casi_email: {
+      type: String,
+      unique: true,
+      validate: [isEmail, 'invalid email'],
+      trim: true,
     },
   },
   {timestamps: true}

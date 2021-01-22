@@ -3,6 +3,7 @@ import {Request, Response, NextFunction} from 'express';
 import helmet from 'helmet';
 import compression from 'compression'; // compresses requests
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import lusca from 'lusca';
 import cors from 'cors';
 import path from 'path';
@@ -41,6 +42,7 @@ mongoose
 // Express configuration
 app.set('port', process.env.PORT);
 app.use(compression());
+app.use(cookieParser());
 app.use(bodyParser.json({type: 'application/json'}));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());

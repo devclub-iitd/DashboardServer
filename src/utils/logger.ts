@@ -5,6 +5,8 @@ const isSensitive = (key: string | undefined) => {
   switch (key) {
     case 'password':
     case 'token':
+    case 'Cookie':
+    case 'Authorization':
       return true;
   }
   return false;

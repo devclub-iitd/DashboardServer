@@ -28,7 +28,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
         .catch(err => {
           console.log(err);
           reject(err);
-          next(err);
+          // next(err);
         });
     });
   };
@@ -80,7 +80,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
               createError(
                 404,
                 'Not found',
-                `${name} does not exist with id ${req.params.docid}`
+                `${name} does not exist with id ${req.params.id}`
               )
             );
             return doc;

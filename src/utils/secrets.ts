@@ -42,11 +42,17 @@ if (!MONGODB_URI) {
 }
 
 export const ADMIN_ENTRY: string = process.env['ADMIN_ENTRY'] || '';
-export const ADMIN_PASS: string = process.env['ADMIN_PASS'] || '';
+export const ADMIN_CASI_EMAIL: string = process.env['ADMIN_CASI_EMAIL'] || '';
 
-if (ADMIN_ENTRY == '' || ADMIN_PASS == '') {
-  logger.error(
-    'Admin entry number or password missing. Set ADMIN_ENTRY and ADMIN_PASS environment variables'
-  );
-  throw new Error('Admin entry number or password missing');
+if (ADMIN_ENTRY == '' || ADMIN_CASI_EMAIL == '') {
+  logger.error('Set ADMIN_ENTRY and ADMIN_CASI_EMAIL environment variables');
+  throw new Error('Admin entry number or CASI email id missing');
+}
+
+export const CLIENT_ACCESS_TOKEN: string =
+  process.env['CLIENT_ACCESS_TOKEN'] || '';
+
+if (CLIENT_ACCESS_TOKEN == '') {
+  logger.error('Set CLIENT_ACCESS_TOKEN environment variable');
+  throw new Error('SSO Client Access token is missing');
 }

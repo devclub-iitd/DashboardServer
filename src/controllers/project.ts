@@ -2,7 +2,7 @@ import express from 'express';
 import Project from '../models/project';
 import initCRUD from '../utils/crudFactory';
 //import { ADMIN_SECRET } from "../utils/secrets";
-import {checkToken, isAdmin} from '../middlewares/auth';
+import {hasCASITokenApproved, isAdmin} from '../middlewares/auth';
 
 const router = express.Router({mergeParams: true});
 const {
@@ -69,10 +69,10 @@ const all_website = (req: Request, res: Response, next: NextFunction) => {
 
 router.post('/deleteAll/', isAdmin, delete_record);
 router.post('/delete', isAdmin, delete_project);
-router.post('/', checkToken, create_record);
+router.post('/', hasCASITokenApproved, create_record);
 router.get('/getAll/', all_website);
-router.get('/getAllDB/', checkToken, all);
+router.get('/getAllDB/', hasCASITokenApproved, all);
 router.get('/:id', get);
-router.put('/:id', checkToken, update_record);
+router.put('/:id', hasCASITokenApproved, update_record);
 
 export default router;

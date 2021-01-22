@@ -3,7 +3,7 @@ import Item from '../models/item';
 import initCRUD from '../utils/crudFactory';
 import {Request, Response, NextFunction} from 'express';
 import {createResponse, createError} from '../utils/helper';
-import {checkToken, isAdmin} from '../middlewares/auth';
+import {hasCASITokenApproved, isAdmin} from '../middlewares/auth';
 
 const router = express.Router({mergeParams: true});
 const {
@@ -52,9 +52,9 @@ const all_website = (req: Request, res: Response, next: NextFunction) => {
 
 router.post('/', create);
 router.get('/getAll/', all_website);
-router.get('/getAllDB', checkToken, all);
+router.get('/getAllDB', hasCASITokenApproved, all);
 router.get('/:id', get);
-router.put('/:id', checkToken, update_record); // Only a valid user can update
+router.put('/:id', hasCASITokenApproved, update_record); // Only a valid user can update
 router.post('/deleteAll/', isAdmin, delete_record);
 router.post('/delete/', isAdmin, delete_item);
 

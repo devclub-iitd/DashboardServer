@@ -4,7 +4,7 @@ import initCRUD from '../utils/crudFactory';
 //import { ADMIN_SECRET } from "../utils/secrets";
 import {createResponse, createError} from '../utils/helper';
 import {Request, Response, NextFunction} from 'express';
-import {checkToken, isAdmin} from '../middlewares/auth';
+import {hasCASITokenApproved, isAdmin} from '../middlewares/auth';
 
 const router = express.Router({mergeParams: true});
 const {
@@ -66,8 +66,8 @@ router.post('/deleteAll/', isAdmin, delete_record);
 router.post('/delete/', isAdmin, delete_resource);
 router.post('/', create);
 router.get('/getAll/', all_website);
-router.get('/getAllDB', checkToken, all);
+router.get('/getAllDB', hasCASITokenApproved, all);
 router.get('/:id', get);
-router.put('/:id', checkToken, update_record);
+router.put('/:id', hasCASITokenApproved, update_record);
 
 export default router;
