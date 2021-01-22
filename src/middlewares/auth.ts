@@ -11,7 +11,6 @@ import path from 'path';
 import {FilterQuery} from 'mongoose';
 import {CLIENT_ACCESS_TOKEN} from '../utils/secrets';
 import logger from '../utils/logger';
-import {stringify} from 'querystring';
 
 // SSO Url for refreshing tokens that are about to expire
 const SSO_Refresh_URL = 'https://auth.devclub.in/auth/refresh-token';
@@ -33,7 +32,7 @@ interface AuthUser {
   firstname: string;
   lastname: string;
   email: string;
-  isVerified: Boolean;
+  isVerified: boolean;
   entry_num: string;
   roles: [string];
 }

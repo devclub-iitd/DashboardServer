@@ -1,17 +1,11 @@
 import express from 'express';
 import User from '../models/user';
 import initCRUD from '../utils/crudFactory';
-// import rp from "request-promise";
 
-// import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET } from "../utils/secrets";
-import {JWT_SECRET, ADMIN_ENTRY} from '../utils/secrets';
+import {ADMIN_ENTRY} from '../utils/secrets';
 import {ADMIN_ID} from '../utils/init';
-//import { ADMIN_SECRET } from "../utils/secrets";
-// import logger from "../utils/logger";
-import jwt, {Secret} from 'jsonwebtoken';
 import {createResponse, createError} from '../utils/helper';
 import {Request, Response, NextFunction} from 'express';
-import bcrypt from 'bcrypt';
 import {
   isAdmin,
   checkAdmin,
@@ -85,7 +79,7 @@ const update_record = async (
 
   // If casi_email is to be updated, update roles in CASI
   if (req.body.casi_email != undefined) {
-    let doc = await User.findById(req.params.id);
+    const doc = await User.findById(req.params.id);
     if (!doc) {
       return next(
         createError(404, 'Not found', `No user with id ${req.params.id}`)

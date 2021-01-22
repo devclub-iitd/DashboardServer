@@ -9,7 +9,7 @@ const initCRUD = (model: mongoose.Model<mongoose.Document, {}>) => {
    * POST /
    * Create a document
    */
-  const create = (req: Request, res: Response, next: NextFunction) => {
+  const create = (req: Request, res: Response, _: NextFunction) => {
     console.log(req.body);
 
     return new Promise<mongoose.Document>((resolve, reject) => {
