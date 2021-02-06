@@ -37,7 +37,7 @@ const users = [
     hometown: 'Satna',
     interests: 'Satna',
     specialization: 'Satna',
-    category: 'Senior Undergraduate',
+    category: 'Overall Coordinator',
     intro: 'Satna',
     display_on_website: true,
     url: {
@@ -60,7 +60,7 @@ const users = [
     hometown: 'Satna',
     interests: 'Satna',
     specialization: 'Satna',
-    category: 'Senior Undergraduate',
+    category: 'Executive',
     intro: 'Satna',
     display_on_website: true,
     url: {
@@ -83,7 +83,7 @@ const users = [
     hometown: 'Satna',
     interests: 'Satna',
     specialization: 'Satna',
-    category: 'Senior Undergraduate',
+    category: 'Developer',
     intro: 'Satna',
     display_on_website: false,
     url: {
