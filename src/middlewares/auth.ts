@@ -95,6 +95,16 @@ export const hasCASIToken = async (
   }
 };
 
+export const clearCookies = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  res.clearCookie(accessTokenName);
+  res.clearCookie(refreshTokenName);
+  next();
+};
+
 // Checks if the logged in user is  present in our DB and is approved.
 // hasCASITokenApproved must be called before this.
 const isApproved = (req: Request, res: Response, next: NextFunction) => {

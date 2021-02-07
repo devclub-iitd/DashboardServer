@@ -12,6 +12,7 @@ import {
   hasCASITokenApproved,
   hasCASIToken,
   updateCASIEmail,
+  clearCookies,
 } from '../middlewares/auth';
 
 const router = express.Router({mergeParams: true});
@@ -155,6 +156,26 @@ const isSameUserOrAdmin = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+/*
+ * There should a auth middle before this which clears the cookies.
+ */
+const logout = (req: Request, res: Response, next: NextFunction) => {
+  res.send('Logged out!');
+};
+
+/*
+ * Only an approved user should be able to access this
+ */
+const myProfile = async (req: Request, res: Response, next: NextFunction) => {
+  const doc = await User.findById(res.locals.logged_user_id);
+  if (!doc) {
+    return next(
+      createError(404, 'Not Found', "This user's profile does not exist")
+    );
+  }
+  res.json(createResponse('Found profile with details:', doc));
+};
+
 router.post(
   '/testAdmin/',
   isAdmin,
@@ -180,5 +201,7 @@ router.get('/getAllDB', hasCASITokenApproved, all);
 router.post('/query/', hasCASITokenApproved, all_query);
 router.post('/register', hasCASIToken, register);
 router.get('/unapproved', hasCASITokenApproved, getUnapproved);
+router.get('/myProfile', hasCASITokenApproved, myProfile);
+router.post('/logout', hasCASIToken, clearCookies, logout);
 
 export default router;
