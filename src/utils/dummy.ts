@@ -3,8 +3,6 @@ import User from '../models/user';
 import Project from '../models/project';
 import Event from '../models/event';
 import Resources from '../models/resources';
-import {CreateQuery, Document} from 'mongoose';
-// import { Document } from "mongoose";
 
 const resources = [
   {

@@ -159,7 +159,7 @@ const isSameUserOrAdmin = (req: Request, res: Response, next: NextFunction) => {
 /*
  * There should a auth middle before this which clears the cookies.
  */
-const logout = (req: Request, res: Response, next: NextFunction) => {
+const logout = (req: Request, res: Response, _: NextFunction) => {
   res.send('Logged out!');
 };
 
