@@ -3,6 +3,7 @@ import User from '../models/user';
 import Project from '../models/project';
 import Event from '../models/event';
 import Resources from '../models/resources';
+import {CreateQuery, Document} from 'mongoose';
 // import { Document } from "mongoose";
 
 const resources = [
@@ -36,7 +37,7 @@ const users = [
     hometown: 'Satna',
     interests: 'Satna',
     specialization: 'Satna',
-    category: 'Senior Undergraduate',
+    category: 'Overall Coordinator',
     intro: 'Satna',
     display_on_website: true,
     url: {
@@ -59,7 +60,7 @@ const users = [
     hometown: 'Satna',
     interests: 'Satna',
     specialization: 'Satna',
-    category: 'Senior Undergraduate',
+    category: 'Executive',
     intro: 'Satna',
     display_on_website: true,
     url: {
@@ -82,7 +83,7 @@ const users = [
     hometown: 'Satna',
     interests: 'Satna',
     specialization: 'Satna',
-    category: 'Senior Undergraduate',
+    category: 'Developer',
     intro: 'Satna',
     display_on_website: false,
     url: {
