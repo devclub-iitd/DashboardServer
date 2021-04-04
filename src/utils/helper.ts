@@ -3,9 +3,18 @@ export const createResponse = (message: string, data: unknown) => ({
   data: data,
 });
 
-export const createError = (_: number, name: string, message: string) => {
-  const e = new Error();
-  //e.status = status; <- Seemed useless. TODO: check
+export class ErrorWStatus extends Error {
+  status: number;
+
+  constructor() {
+    super();
+    this.status = 0;
+  }
+}
+
+export const createError = (status: number, name: string, message: string) => {
+  const e = new ErrorWStatus();
+  e.status = status;
   e.name = name;
   e.message = message;
   return e;

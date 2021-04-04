@@ -20,6 +20,7 @@ import itemRouter from './controllers/item';
 import resourceRouter from './controllers/resource';
 
 import init from './utils/init';
+import {ErrorWStatus} from './utils/helper';
 
 // Create Express server
 const app = express();
@@ -79,7 +80,7 @@ app.use('/healthz', (_0: Request, res: Response, _1: NextFunction) => {
 });
 
 app.use((err: Error, _0: Request, res: Response, _1: NextFunction) => {
-  res.status(500);
+  res.status((err as ErrorWStatus).status);
   const e = new Error();
   e.message = err.message;
   e.name = err.name;
