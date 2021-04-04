@@ -153,7 +153,7 @@ const userSchema = new mongoose.Schema(
     },
     casi_email: {
       type: String,
-      unique: true,
+      unique: false,
       validate: [isEmail, 'invalid email'],
       trim: true,
     },
