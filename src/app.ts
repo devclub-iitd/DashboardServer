@@ -46,7 +46,14 @@ app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json({type: 'application/json'}));
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors());
+
+const corsOptions = {
+  origin: true, // Allow all origin ending in devclub.com
+  credentials: true,
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+app.use(cors(corsOptions));
+
 app.use(helmet());
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
