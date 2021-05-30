@@ -111,13 +111,13 @@ const isApproved = (req: Request, res: Response, next: NextFunction) => {
   User.findOne({casi_email: res.locals.casi_email}).then(userDoc => {
     if (!userDoc) {
       return next(
-        createError(401, 'Unauthorized', 'This user is not authorized')
+        createError(401, 'Unregistered', 'This user is not registered')
       );
     }
 
     if (userDoc.get('privelege_level') == 'Unapproved_User') {
       return next(
-        createError(401, 'Unauthorized', 'An admin needs to approve this user')
+        createError(401, 'Unapproved', 'An admin needs to approve this user')
       );
     }
 
