@@ -100,8 +100,11 @@ export const clearCookies = (
   res: Response,
   next: NextFunction
 ) => {
-  res.clearCookie(accessTokenName);
-  res.clearCookie(refreshTokenName);
+  const clearCookieOpts = {
+    domain: 'devclub.in',
+  };
+  res.clearCookie(accessTokenName, clearCookieOpts);
+  res.clearCookie(refreshTokenName, clearCookieOpts);
   next();
 };
 
