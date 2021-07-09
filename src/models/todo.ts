@@ -18,17 +18,11 @@ const todoSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    type: {
-      type: String,
-      required: true,
-      lowercase: true,
-      trim: true,
-      enum: ['project', 'event', 'resource'],
-    },
+    
     due_date: {
       type: Date,
     },
-    assignee: {
+    assigned_to: {
       type: [
         {
           type: mongoose.Schema.Types.ObjectId,
@@ -36,10 +30,20 @@ const todoSchema = new mongoose.Schema(
         },
       ],
     },
+    assigned_by: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      ],
+    },
+
     status: {
       type: String,
       trim: true,
       required: true,
+      enum: ['ongoing','completed','upcoming'],
     },
     labels: {
       type: [
@@ -50,24 +54,9 @@ const todoSchema = new mongoose.Schema(
         },
       ],
     },
-    completed: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    created_by: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      // required: true
-    },
-    updated_by: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      // required: true
-    },
   },
   {timestamps: true}
 );
 
-const item = mongoose.model('Todo', todoSchema);
-export default item;
+const todo = mongoose.model('Todo', todoSchema);
+export default todo;
