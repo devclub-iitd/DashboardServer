@@ -87,9 +87,18 @@ const update_record = async (
       );
     }
 
+    // Workaround for when initial approval happens. At that time casi_email
+    // would be same as that in db, but the addition of roles needs to be done
+    // So in that case we make the old casi email to be empty string so it is
+    // different from the new one
+    let casi_email: string = doc.get('casi_email');
+    if (doc.get('privelege_level') == 'Unapproved_User') {
+      casi_email = '';
+    }
+
     const casiUpdateRes = await updateCASIEmail(
       res,
-      doc.get('casi_email'),
+      casi_email,
       req.body.casi_email
     );
 

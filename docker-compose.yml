@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   database:
-    image: "${REGISTRY_NAME}mongo:4.4.3-bionic"
+    image: "${REGISTRY_NAME}mongo:4.4.6-bionic"
     volumes:
       - clubdb:/data/db
     networks:

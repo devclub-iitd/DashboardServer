@@ -1,4 +1,4 @@
-import Item from '../models/item';
+import Item from '../models/todo';
 import User from '../models/user';
 import Project from '../models/project';
 import Event from '../models/event';

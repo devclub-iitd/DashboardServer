@@ -1,5 +1,5 @@
 import express from 'express';
-import Item from '../models/item';
+import Todo from '../models/todo';
 import initCRUD from '../utils/crudFactory';
 import {Request, Response, NextFunction} from 'express';
 import {createResponse, createError} from '../utils/helper';
@@ -14,7 +14,7 @@ const {
   all_query,
   all_delete,
   delete_query,
-} = initCRUD(Item);
+} = initCRUD(Todo);
 
 const delete_record = (req: Request, res: Response, next: NextFunction) => {
   res.locals.no_send = true;
