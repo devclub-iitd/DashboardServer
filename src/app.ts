@@ -16,7 +16,7 @@ import logRequest from './middlewares/logRequest';
 import userRouter from './controllers/user';
 import projectRouter from './controllers/project';
 import eventRouter from './controllers/event';
-import itemRouter from './controllers/item';
+import itemRouter from './controllers/todo';
 import resourceRouter from './controllers/resource';
 
 import init from './utils/init';

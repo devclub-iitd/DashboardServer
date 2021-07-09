@@ -1,63 +1,73 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const todoSchema = new mongoose.Schema(
-    {
-        title:{
-            type: String,
-            required:true,
-            trim:true,
-        },
-        description:{
-            type:String,
-            trim:true,
-        },
-        status:{
-            type: String,
-            required:true,
-            default:'UPCOMING',
-            trim:true,
-            enum:['UPCOMING','COMPLETED','ONGOING'],
-        },
-        projectid:{
-            type:[
-                {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Project',
-                },
-            ],
-        },
-        assignedTo:{
-            type:[
-                {
-                    type:mongoose.Schema.Types.ObjectId,
-                    ref: 'User',
-                },
-            ],
-        },
-        assignedBy:{
-            type:[
-                {
-                    type:mongoose.Schema.Types.ObjectId,
-                    ref: 'User',
-                },
-            ],
-        },
-        start_date:{
-            type:Date,
-            required:true,
-        },
-        completed_OR_not:{
-            type:Boolean,
-            required:true,
-        },
-        end_date_OR_expected_completion_date:{
-            type:Date,
-            required:false,
-        },
-
+  {
+    parentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Project',
+      index: true,
     },
-    {timestamps:true}
-)
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    type: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      enum: ['project', 'event', 'resource'],
+    },
+    due_date: {
+      type: Date,
+    },
+    assignee: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      ],
+    },
+    status: {
+      type: String,
+      trim: true,
+      required: true,
+    },
+    labels: {
+      type: [
+        {
+          type: String,
+          lowercase: true,
+          trim: true,
+        },
+      ],
+    },
+    completed: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    created_by: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      // required: true
+    },
+    updated_by: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      // required: true
+    },
+  },
+  {timestamps: true}
+);
 
-const ToDo=mongoose.model('ToDo',todoSchema)
-export default ToDo
+const item = mongoose.model('Todo', todoSchema);
+export default item;
