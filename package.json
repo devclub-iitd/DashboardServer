@@ -63,7 +63,7 @@
     "lusca": "^1.6.1",
     "mongoose": "^5.10.5",
     "traverse": "^0.6.6",
-    "validator": "^11.0.0",
+    "validator": "^13.7.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
