@@ -70,7 +70,7 @@
     "@types/node": "^13.13.21",
     "concurrently": "^5.3.0",
     "gts": "^2.0.2",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "nodemon": "^1.19.1",
     "typescript": "^3.9.7"
   },
